@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-5 col-sm-6 mx-auto">
+    {% if password_change %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{password_change}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    <form method="post" class="card px-4" novalidate>
+        {% csrf_token %}
+        <h2 class="text-center mt-3">Log in to PodLoop</h2>
+        {% for field in form %}
+                {{ field.label_tag }} 
+                {{ field }}
+                {% if field.errors %}
+                    <small class="text-danger mb-2">{{ field.errors|striptags }}</small> 
+                {% endif %}
+        {% endfor %}
+        {% if error_message %}
+        <p class="text-danger">{{error_message}}</p>
+        {% endif %}
+        <input type="submit" value="Login" class="btn btn-primary full-width">
+        <hr>
+        <p class="text-center">Forgot your password <a href="{% url 'accounts:reset-password' %}">Reset Password</a></p>
+        <p class="text-center">Don't have an account? <a href="{% url 'accounts:register' %}">Join Now</a></p>
+    </form>
+</div>
+{% endblock %}

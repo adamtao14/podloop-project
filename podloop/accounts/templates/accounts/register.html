@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <form method="post" class="card px-4 col-sm-6 mx-auto" novalidate>
+        {% csrf_token %}
+        <h2 class="text-center mt-3">Register to PodLoop</h2>
+        {% for field in form %}
+                {{ field.label_tag }} 
+                {{ field }}
+                {% if field.errors %}
+                    <small class="text-danger mb-2">{{ field.errors|striptags }}</small> 
+                {% endif %}
+        {% endfor %}
+        {% if success_message %}
+        <h4 class="text-success">{{success_message}}</h4>
+        {% else %}
+        <ul>
+            {% for error in error_message %}
+            <li class="text-danger">{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif%}
+        <input type="submit" value="Register" class="btn btn-primary full-width">
+        <hr>
+        <p class="text-center">Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+    </form>
+</div>
+{% endblock %}
