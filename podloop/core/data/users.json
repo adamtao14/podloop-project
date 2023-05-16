@@ -1,0 +1,94 @@
+[
+    {
+      "name": "John",
+      "last_name": "Smith",
+      "email": "john.smith@example.com",
+      "password": "z9V3@^Nj%b+3",
+      "username": "johnsmith"
+    },
+    {
+      "name": "Emma",
+      "last_name": "Johnson",
+      "email": "emma.johnson@example.com",
+      "password": "P@55w0rd!123",
+      "username": "emmajohnson"
+    },
+    {
+      "name": "Michael",
+      "last_name": "Williams",
+      "email": "michael.williams@example.com",
+      "password": "Xy$8K@59c^Tm",
+      "username": "mwilliams"
+    },
+    {
+      "name": "Sarah",
+      "last_name": "Anderson",
+      "email": "sarah.anderson@example.com",
+      "password": "S3cur3P@ssword",
+      "username": "sarahanderson"
+    },
+    {
+      "name": "Christopher",
+      "last_name": "Thompson",
+      "email": "christopher.thompson@example.com",
+      "password": "P@ssw0rd!Secur3",
+      "username": "cthompson"
+    },
+    {
+      "name": "Olivia",
+      "last_name": "Martinez",
+      "email": "olivia.martinez@example.com",
+      "password": "M9!2p4@H&5$s",
+      "username": "omartinez"
+    },
+    {
+      "name": "Ethan",
+      "last_name": "Lewis",
+      "email": "ethan.lewis@example.com",
+      "password": "5Gh&7@4Rf8p2",
+      "username": "elewis"
+    },
+    {
+      "name": "Ava",
+      "last_name": "Hernandez",
+      "email": "ava.hernandez@example.com",
+      "password": "H2#hV!s4^mW1",
+      "username": "ahernandez"
+    },
+    {
+      "name": "Noah",
+      "last_name": "Brown",
+      "email": "noah.brown@example.com",
+      "password": "B1@5e2#8N$7o",
+      "username": "nbrown"
+    },
+    {
+      "name": "Sophia",
+      "last_name": "Taylor",
+      "email": "sophia.taylor@example.com",
+      "password": "$ecur3P@55!234",
+      "username": "sophiataylor"
+    },
+    {
+      "name": "Liam",
+      "last_name": "Anderson",
+      "email": "liam.anderson@example.com",
+      "password": "A9!4L^m2S&8w",
+      "username": "liamanderson"
+    },
+    {
+      "name": "Isabella",
+      "last_name": "White",
+      "email": "isabella.white@example.com",
+      "password": "W#9Xc&5Sv3@p",
+      "username": "iwhite"
+    },
+    {
+      "name": "Benjamin",
+      "last_name": "Lee",
+      "email": "benjamin.lee@example.com",
+      "password": "L7p&5@hX^e#4",
+      "username": "blee"
+   
+    }
+]

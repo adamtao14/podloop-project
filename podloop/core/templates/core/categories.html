@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %} {% block head %}
+<style>
+  .card {
+    background-color: #f1ad4e;
+  }
+  .card:hover {
+    background-color: #fff;
+  }
+</style>
+{% endblock %} {% block content %}
+<ul class="ps-4 pe-4 mt-5">
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for category in categories %}
+    <div class="col">
+      <div class="card">
+        <div class="card-body text-center px-1">
+          <h6>
+            <a
+              class="card-title text-center link-underline link-underline-opacity-0"
+              href="/categories/{{category.slug}}"
+              >{{category.name}}</a
+            >
+          </h6>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <h1 class="text-light text-center">No Categories yet.</h1>
+    {% endfor %}
+  </div>
+</ul>
+{% endblock %}

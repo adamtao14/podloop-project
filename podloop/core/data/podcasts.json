@@ -1,0 +1,114 @@
+[
+    {
+      "name": "The Art of Storytelling",
+      "description": "Explore the fascinating world of storytelling and its impact on our lives.",
+      "tags": ["storytelling", "narrative", "entertainment"],
+      "owner_id": 67,
+      "categories": ["Education"]
+    },
+    {
+      "name": "Tech Talks",
+      "description": "Dive into the latest trends and innovations in the world of technology.",
+      "tags": ["technology", "innovation", "tech industry"],
+      "owner_id": 67,
+      "categories": ["Science and Technology"]
+    },
+    {
+      "name": "Mindfulness Matters",
+      "description": "Discover the power of mindfulness and how it can transform your life.",
+      "tags": ["mindfulness", "meditation", "self-improvement"],
+      "owner_id": 68,
+      "categories": ["Personal Development"]
+    },
+    {
+      "name": "Entrepreneurial Journey",
+      "description": "Join us as we explore the challenges and successes of entrepreneurs around the globe.",
+      "tags": ["entrepreneurship", "business", "startups"],
+      "owner_id": 71,
+      "categories": ["Self-Help and Motivation"]
+    },
+    {
+      "name": "The Science of Happiness",
+      "description": "Uncover the scientific secrets behind happiness and well-being.",
+      "tags": ["happiness", "well-being", "positive psychology"],
+      "owner_id": 73,
+      "categories": ["Self-Help and Motivation"]
+    },
+    {
+      "name": "Exploring the Unknown",
+      "description": "Embark on a journey to explore the mysteries of the world and beyond.",
+      "tags": ["exploration", "mysteries", "adventure"],
+      "owner_id": 75,
+      "categories": ["Science and Technology"]
+    },
+    {
+      "name": "Financial Freedom",
+      "description": "Learn the strategies and principles to achieve financial independence.",
+      "tags": ["finance", "investing", "wealth management"],
+      "owner_id": 75,
+      "categories": ["Business and Finance","Self-Help and Motivation"]
+    },
+    {
+      "name": "Health and Wellness Insights",
+      "description": "Gain valuable insights into maintaining a healthy lifestyle and overall well-being.",
+      "tags": ["health", "wellness", "healthy living"],
+      "owner_id": 72,
+      "categories": ["Mental Health and Well-being"]
+    },
+    {
+      "name": "The Creative Mind",
+      "description": "Delve into the minds of creative individuals and their artistic processes.",
+      "tags": ["creativity", "art", "inspiration"],
+      "owner_id": 77,
+      "categories": ["Self-Help and Motivation"]
+    },
+    {
+      "name": "The Power of Relationships",
+      "description": "Discover the importance of relationships and how they shape our lives.",
+      "tags": ["relationships", "communication", "interpersonal skills"],
+      "owner_id": 76,
+      "categories": ["Relationships and Dating"]
+    },
+    {
+      "name": "Exploring World History",
+      "description": "Take a fascinating journey through significant events and eras in world history.",
+      "tags": ["history", "world history", "historical events"],
+      "owner_id": 75,
+      "categories": ["Education"]
+    },
+    {
+      "name": "The Future of Work",
+      "description": "Explore the changing landscape of work and the impact of technology.",
+      "tags": ["future of work", "workplace", "technology"],
+      "owner_id": 78,
+      "categories": ["Education"]
+    },
+    {
+      "name": "Nature's Wonders",
+      "description": "Appreciate the beauty of nature and its wonders around the globe.",
+      "tags": ["nature", "wildlife", "natural beauty"],
+      "owner_id": 71,
+      "categories": ["Travel and Adventure"]
+    },
+    {
+      "name": "The Art of Cooking",
+      "description": "Delight in the culinary arts and discover new recipes and cooking techniques.",
+      "tags": ["cooking", "culinary arts", "recipes"],
+      "owner_id": 68,
+      "categories": ["Food and Cooking"]
+    },
+    {
+      "name": "Sports Talk",
+      "description": "Engage in discussions about the latest news and updates in the world of sports.",
+      "tags": ["sports", "athletics", "sports news"],
+      "owner_id": 68,
+      "categories": ["Sports"]
+    },
+    {
+      "name": "Inspiring Leadership",
+      "description": "Learn from inspiring leaders and",
+      "tags": ["leadership", "inspiration"],
+      "owner_id": 70,
+      "categories": ["Personal Development","Business and Finance"]
+    }
+]

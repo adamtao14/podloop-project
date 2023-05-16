@@ -1,0 +1,42 @@
+[
+    {
+        "email":"emma.johnson@example.com",
+        "followed_podcasts":["Mindfulness Matters"]
+    },
+    {
+        "email":"john.smith@example.com",
+        "followed_podcasts":["Health and Wellness Insights", "Exploring the Unknown", "The Art of Cooking"]
+    },
+    {
+        "email":"michael.williams@example.com",
+        "followed_podcasts":["Sports Talk", "Tech Talks", "The Power of Relationships", "The Art of Storytelling"]
+    },
+    {
+        "email":"sarah.anderson@example.com",
+        "followed_podcasts":["Exploring World History", "The Future of Work", "The Creative Mind", "Nature's Wonders"]
+    },
+    {
+        "email":"christopher.thompson@example.com",
+        "followed_podcasts":["Inspiring Leadership", "The Science of Happiness", "Entrepreneurial Journey"]
+    },
+    {
+        "email":"olivia.martinez@example.com",
+        "followed_podcasts":["Mindfulness Matters", "Tech Talks", "The Art of Storytelling", "The Power of Relationships", "The Future of Work"]
+    },
+    {
+        "email":"ethan.lewis@example.com",
+        "followed_podcasts":["Health and Wellness Insights", "Sports Talk", "Exploring World History", "The Creative Mind"]
+    },
+    {
+        "email":"ava.hernandez@example.com",
+        "followed_podcasts":["Health and Wellness Insights", "Sports Talk", "Exploring World History", "The Creative Mind"]
+    },
+    {
+        "email":"noah.brown@example.com",
+        "followed_podcasts":["The Art of Cooking", "Mindfulness Matters", "Exploring World History", "The Power of Relationships"]
+    },
+    {
+        "email":"sophia.taylor@example.com",
+        "followed_podcasts":["Tech Talks", "Entrepreneurial Journey", "The Future of Work", "The Creative Mind", "The Power of Relationships"]
+    }
+]

@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %} {% load static %} {% block head %}
+<link rel="stylesheet" href="{% static 'podcast.css' %}" />
+<link rel="stylesheet" href="{% static 'category.css' %}" />
+
+{% endblock %} {% block content %}
+<div class="mt-5 row">
+  <div class="info-section col-lg-4">
+    <div class="podcast-image">
+      {% if podcast.podcast_thumbnail %}
+      <img
+        src="{{ MEDIA_URL }}{{podcast.podcast_thumbnail}}"
+        class="img-fluid"
+        id="podcast-thumbnail"
+        alt="Podcast thumbnail"
+      />
+      {% else %}
+      <img
+        src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
+        class="img-fluid"
+        id="podcast-thumbnail"
+        alt="Podcast thumbnail"
+      />
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-lg-8 mt-4">
+    <h1 class="text-light">{{podcast.name}}</h1>
+    <h5 class="text-warning">{{owner.username}}</h5>
+    <div class="category-list mt-3">
+      {% for category in categories %}
+      <a href="{% url 'core:category-detail' category.slug%}"
+        ><span class="badge rounded-pill">{{category.name}}</span></a
+      >
+      {% endfor %}
+    </div>
+    <div class="follow-section row" style="height: 90px">
+      <div class="col-sm-6 d-flex align-items-end">
+        <p class="text-light align-text-bottom mb-0">{{followers}} Followers</p>
+      </div>
+      <div class="col-sm-6 d-flex align-items-end">
+        {% if user.is_authenticated %} {% if is_following %}
+        <a class="btn btn-sm btn-danger" href="{% url 'accounts:login'%}"
+          >Unfollow</a
+        >
+        {% else %}
+        <a class="btn btn-sm btn-success" href="{% url 'accounts:login'%}"
+          >Follow</a
+        >
+        {% endif %} {% else %}
+        <a
+          href="{% url 'accounts:login' %}"
+          class="btn btn-warning align-text-bottom"
+          >Login to follow</a
+        >
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

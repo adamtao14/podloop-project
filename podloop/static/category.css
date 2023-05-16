@@ -1,0 +1,51 @@
+.podcast {
+    background-color: #f1ad4e;
+    max-width: 540px;
+}
+.img {
+height: 150px;
+width: 150px;
+object-fit: cover;
+border-radius: 50%;
+}
+.link-podcast{
+text-decoration: none;
+color:black;
+}
+.link-podcast:hover{
+color:white;
+}
+.badge{
+background-color: #fff;
+color:black;
+}
+.badge:hover{
+background-color:#000;
+color:white;
+}
+.category-list{
+overflow-x: auto;
+white-space: nowrap;
+width: 100%;
+height: auto;
+display: inline-block;
+}
+.category-list::-webkit-scrollbar{
+height: 5px;
+background: #888;
+}
+.category-list::-webkit-scrollbar-track {
+background: #f1f1f1; 
+}
+
+.category-list::-webkit-scrollbar-thumb {
+background: #c7c7c7; 
+}
+
+.category-list::-webkit-scrollbar-thumb:hover {
+background: #555; 
+}
+.category-list a{
+display: inline-block;
+margin-bottom:10px;
+}

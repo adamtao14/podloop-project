@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %} 
+{% load static %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'category.css' %}">
+
+{% endblock %} {% block content %}
+<div class="mt-5">
+  <h2 class="text-center text-light mb-4">{{category_name}}</h2>
+  <a href="{% url 'core:categories' %}" class="text-light">&larr; Go back to categories list</a>
+  {% for podcast in podcasts %}
+  <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
+    <div class="row g-0">
+      <div class="col-md-4 text-center">
+        {% if podcast.podcast_thumbnail %}
+        <img
+          src="{{ MEDIA_URL }}{{podcast.podcast_thumbnail}}"
+          class="img"
+          alt="Podcast thumbnail"
+        />
+        {% else %}
+        <img
+          src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
+          class="img me-auto ms-auto"
+          alt="Podcast thumbnail"
+        />
+        {% endif %}
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <a href="/podcasts/{{podcast.slug}}" class="link-podcast"
+            ><h5 class="card-title">{{podcast.name}}</h5></a
+          >
+            <h6 class="text-body-secondary">By {{podcast.owner_username}}</h6>
+            <div class="category-list">
+            {% for category in podcast.categories %}
+            <a href="{% url 'core:category-detail' category.slug%}"><span class="badge rounded-pill">{{category.name}}</span></a>
+            {% endfor %}
+            </div>
+          <p class="mt-2">{{podcast.followers}} Followers</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %} 
+  
+  {% if not podcasts %}
+  <h1 class="text-light text-center mb-5 mt-5">No Podcasts found</h1>
+  {% else %}
+  <nav aria-label="..." class="ms-auto me-auto mt-5">
+    <ul class="pagination">
+      {% if pagination.page_controller.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{pagination.current_page|add:"-1"}}">Previous</a>
+      </li>
+      <li class="page-item"><a class="page-link" href="?page={{pagination.current_page|add:"-1"}}">{{pagination.current_page|add:"-1"}}</a></li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="?page={{pagination.current_page|add:"-1"}}">Previous</a>
+      </li>
+      {% endif %}
+
+      <li class="page-item active" aria-current="page">
+        <span class="page-link">{{pagination.current_page}}</span>
+      </li>
+      {% if pagination.page_controller.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{pagination.current_page|add:"1"}}">{{pagination.current_page|add:"1"}}</a></li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{pagination.current_page|add:"1"}}">Next</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="?page={{pagination.current_page|add:"1"}}">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endif %} {% endblock %}

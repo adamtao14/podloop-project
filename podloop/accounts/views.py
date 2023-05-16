@@ -18,6 +18,9 @@ class LoginView(View):
     form_class = LoginForm
     
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('/home/')
+
         #Nel caso questo fosse un redirect dopo cambi password,avvertire del successo del cambio password
         success_password_change = request.GET.get('success_message')
         form = self.form_class()
@@ -45,8 +48,11 @@ class LoginView(View):
 class RegisterView(View):
     template_name = 'accounts/register.html'
     form_class = RegisterForm
-    
+
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect('/home/')
+        
         form = self.form_class()
         return render(request, self.template_name, context={'form': form})
         

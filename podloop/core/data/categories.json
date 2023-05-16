@@ -1,0 +1,86 @@
+[
+  {
+    "name": "True Crime",
+    "slug": "true-crime"
+  },
+  {
+    "name": "Comedy",
+    "slug": "comedy"
+  },
+  {
+    "name": "Education",
+    "slug": "education"
+  },
+  {
+    "name": "Health and Fitness",
+    "slug": "health-and-fitness"
+  },
+  {
+    "name": "History",
+    "slug": "history"
+  },
+  {
+    "name": "News and Politics",
+    "slug": "news-and-politics"
+  },
+  {
+    "name": "Personal Development",
+    "slug": "personal-development"
+  },
+  {
+    "name": "Science and Technology",
+    "slug": "science-and-technology"
+  },
+  {
+    "name": "Society and Culture",
+    "slug": "society-and-culture"
+  },
+  {
+    "name": "Sports",
+    "slug": "sports"
+  },
+  {
+    "name": "Fiction and Storytelling",
+    "slug": "fiction-and-storytelling"
+  },
+  {
+    "name": "Music",
+    "slug": "music"
+  },
+  {
+    "name": "Religion and Spirituality",
+    "slug": "religion-and-spirituality"
+  },
+  {
+    "name": "Parenting and Family",
+    "slug": "parenting-and-family"
+  },
+  {
+    "name": "Relationships and Dating",
+    "slug": "relationships-and-dating"
+  },
+  {
+    "name": "Self-Help and Motivation",
+    "slug": "self-help-and-motivation"
+  },
+  {
+    "name": "Travel and Adventure",
+    "slug": "travel-and-adventure"
+  },
+  {
+    "name": "Food and Cooking",
+    "slug": "food-and-cooking"
+  },
+  {
+    "name": "Mental Health and Well-being",
+    "slug": "mental-health-and-well-being"
+  },
+  {
+    "name": "Pop Culture and Media",
+    "slug": "pop-culture-and-media"
+  },
+  {
+    "name": "Business and Finance",
+    "slug": "business-and-finance"
+  }
+]
