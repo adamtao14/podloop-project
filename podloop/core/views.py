@@ -1,8 +1,9 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView,View
 from .models import Category,Podcast,Episode
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
+
 
 User = get_user_model()
 
@@ -89,3 +90,21 @@ def PodcastView(request,slug):
     }            
     return render(request, template_name, context=context)
                     
+def FollowView(request,slug):
+    podcast = get_object_or_404(Podcast, slug=slug)
+    user = User.objects.get(id=request.user.id)
+    if user.followed_podcasts.filter(name=podcast.name).exists():
+        return redirect('core:podcast',slug)
+    else:
+        user.followed_podcasts.add(podcast)
+        return redirect('core:podcast',slug)
+
+
+def UnfollowView(request,slug):
+    podcast = get_object_or_404(Podcast, slug=slug)
+    user = User.objects.get(id=request.user.id)
+    if user.followed_podcasts.filter(name=podcast.name).exists():
+        user.followed_podcasts.remove(podcast)
+        return redirect('core:podcast',slug)
+    else:
+        return redirect('core:podcast',slug)

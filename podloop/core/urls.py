@@ -1,12 +1,13 @@
-from django.urls import path,include
+from django.urls import path
 from .views import home
-from .views import CategoryListView,CategoryDetailView,PodcastView
+from .views import CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView
 from .models import *
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 import os,json
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.decorators import login_required
 app_name = "core"
 
 def load_data():
@@ -80,6 +81,9 @@ urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='categories'),
     path('categories/<slug:slug>', CategoryDetailView, name='category-detail'),
     path('podcasts/<slug:slug>', PodcastView, name='podcast'),
+    path('podcasts/<slug:slug>/follow', login_required(FollowView), name='follow'),
+    path('podcasts/<slug:slug>/unfollow', login_required(UnfollowView), name='unfollow'),
+    
 ]
 
 if settings.DEBUG:

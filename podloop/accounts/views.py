@@ -19,7 +19,7 @@ class LoginView(View):
     
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('/home/')
+            return redirect('core:home')
 
         #Nel caso questo fosse un redirect dopo cambi password,avvertire del successo del cambio password
         success_password_change = request.GET.get('success_message')
@@ -51,7 +51,7 @@ class RegisterView(View):
 
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('/home/')
+            return redirect('core:home')
         
         form = self.form_class()
         return render(request, self.template_name, context={'form': form})

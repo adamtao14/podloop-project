@@ -1,23 +1,23 @@
 {% extends 'core/base.html' %} {% load static %} {% block head %}
-<link rel="stylesheet" href="{% static 'podcast.css' %}" />
-<link rel="stylesheet" href="{% static 'category.css' %}" />
+<link rel="stylesheet" href="{% static 'episode.css' %}" />
+<link rel="stylesheet" href="{% static 'badge.css' %}" />
 
 {% endblock %} {% block content %}
 <div class="mt-5 row">
   <div class="info-section col-lg-4">
-    <div class="podcast-image">
+    <div class="episode-image">
       {% if podcast.podcast_thumbnail %}
       <img
         src="{{ MEDIA_URL }}{{podcast.podcast_thumbnail}}"
         class="img-fluid"
-        id="podcast-thumbnail"
+        id="episode-thumbnail"
         alt="Podcast thumbnail"
       />
       {% else %}
       <img
         src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
         class="img-fluid"
-        id="podcast-thumbnail"
+        id="episode-thumbnail"
         alt="Podcast thumbnail"
       />
       {% endif %}
@@ -39,11 +39,15 @@
       </div>
       <div class="col-sm-6 d-flex align-items-end">
         {% if user.is_authenticated %} {% if is_following %}
-        <a class="btn btn-sm btn-danger" href="{% url 'accounts:login'%}"
+        <a
+          class="btn btn-sm btn-danger"
+          href="{% url 'core:unfollow' podcast.slug %}"
           >Unfollow</a
         >
         {% else %}
-        <a class="btn btn-sm btn-success" href="{% url 'accounts:login'%}"
+        <a
+          class="btn btn-sm btn-success"
+          href="{% url 'core:follow' podcast.slug %}"
           >Follow</a
         >
         {% endif %} {% else %}
@@ -55,6 +59,44 @@
         {% endif %}
       </div>
     </div>
+  </div>
+  <hr class="text-light mt-5" />
+  <div class="episodes-list">
+    <h2 class="text-light mb-5">Episodes</h2>
+    {% if episodes %} {% for episode in episodes %}
+
+    <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
+      <div class="row g-0">
+        <div class="col-md-4 text-center">
+          {% if episode.episode_thumbnail %}
+          <img
+            src="{{ MEDIA_URL }}{{episode.episode_thumbnail}}"
+            class="img"
+            alt="Episode thumbnail"
+          />
+          {% else %}
+          <img
+            src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
+            class="img me-auto ms-auto"
+            alt="Episode thumbnail"
+          />
+          {% endif %}
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <a
+              href="/podcasts/{{podcast.slug}}/episode/{{episode.id}}"
+              class="link-episode"
+              ><h5 class="card-title">{{episode.title}}</h5></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="text-light" />
+    {% endfor %} {% else %}
+    <p class="text-light">No episodes found</p>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
