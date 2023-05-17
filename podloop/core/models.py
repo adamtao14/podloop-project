@@ -44,12 +44,13 @@ class Podcast(models.Model):
 class Episode(models.Model):
     title = models.CharField(max_length=200,blank=False)
     description = models.CharField(max_length=500,blank=False)
-    uploade_date = models.DateTimeField(default=now)
+    upload_date = models.DateTimeField(default=now)
     tags = models.ManyToManyField(Tag, related_name='episodes',symmetrical=False, blank=True)
     audio = models.FileField(upload_to='audios/',blank=False, validators=[validate_audio_file])
     episode_thumbnail = models.FileField(upload_to='images/',blank=True, validators=[validate_image_file])
     podcast = models.ForeignKey(Podcast,on_delete=models.CASCADE,related_name="episodes")
-    is_private = models.BooleanField(default=False,blank=False) 
+    is_private = models.BooleanField(default=False,blank=False)
+    length = models.CharField(max_length=30, blank=True) 
     class Meta:
         verbose_name_plural = "Episodes"
     

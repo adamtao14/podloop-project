@@ -73,7 +73,7 @@ def load_data():
            
         print('Followings created')
     
-load_data()
+#load_data()
 
 
 urlpatterns = [

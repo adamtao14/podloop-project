@@ -1,4 +1,5 @@
-{% extends 'core/base.html' %} {% load static %} {% block head %}
+{% extends 'core/base.html' %} {% load static %} {% load custom_filters %}
+{%block head %}
 <link rel="stylesheet" href="{% static 'episode.css' %}" />
 <link rel="stylesheet" href="{% static 'badge.css' %}" />
 
@@ -62,22 +63,51 @@
   </div>
   <hr class="text-light mt-5" />
   <div class="episodes-list">
-    <h2 class="text-light mb-5">Episodes</h2>
+    <div class="d-flex justify-content-between">
+      <h2 class="text-light mb-5">Episodes</h2>
+      <div class="dropdown bg-dark">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Sort By
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark">
+          <li>
+            <a
+              class="dropdown-item {% if sort_by == 'old_to_new' %} active {% endif %}"
+              href="/podcasts/{{podcast.slug}}?sort_by=old_to_new"
+              >Old to new</a
+            >
+          </li>
+          <li>
+            <a
+              class="dropdown-item {% if sort_by == 'new_to_old' %} active {% endif %}"
+              href="/podcasts/{{podcast.slug}}?sort_by=new_to_old"
+              >New to old</a
+            >
+          </li>
+          <li><a class="dropdown-item disabled" href="#">Most streamed</a></li>
+        </ul>
+      </div>
+    </div>
     {% if episodes %} {% for episode in episodes %}
 
     <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
       <div class="row g-0">
-        <div class="col-md-4 text-center">
+        <div class="col-md-2 text-center">
           {% if episode.episode_thumbnail %}
           <img
             src="{{ MEDIA_URL }}{{episode.episode_thumbnail}}"
-            class="img"
+            class="img mt-2"
             alt="Episode thumbnail"
           />
           {% else %}
           <img
             src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
-            class="img me-auto ms-auto"
+            class="img mt-3"
             alt="Episode thumbnail"
           />
           {% endif %}
@@ -87,15 +117,26 @@
             <a
               href="/podcasts/{{podcast.slug}}/episode/{{episode.id}}"
               class="link-episode"
-              ><h5 class="card-title">{{episode.title}}</h5></a
+              ><h5 class="card-title mb-3">{{episode.title}}</h5></a
             >
+            <div class="row">
+              <div class="col-sm-12">
+                <p class="text-warning col-sm-6 me-0">
+                  {{ episode.length|seconds_to_minutes }}
+                </p>
+
+                <small class="text-light col-sm-6 me-0"
+                  >{{episode.upload_date}}</small
+                >
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <hr class="text-light" />
     {% endfor %} {% else %}
-    <p class="text-light">No episodes found</p>
+    <p class="text-light">No episodes uploaded yet</p>
     {% endif %}
   </div>
 </div>

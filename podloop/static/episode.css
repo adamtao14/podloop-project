@@ -1,7 +1,7 @@
 .podcast {
     background-color: transparent;
-    max-width: 540px;
-    border: 0px;
+    border-radius: 10px;
+    max-width: auto;
 }
 
 .episode-image{

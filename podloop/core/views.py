@@ -66,7 +66,14 @@ def PodcastView(request,slug):
 
     owner = User.objects.get(id=podcast.owner_id)
     followers = str(Podcast.objects.get(name=podcast.name).followers.all().count())
-    episodes = podcast.episodes.all()
+    sort_by = request.GET.get("sort_by")
+
+    if sort_by == "old_to_new":
+        episodes = podcast.episodes.all().order_by('upload_date')
+    else:
+        episodes = podcast.episodes.all().order_by('-upload_date')
+        sort_by = "new_to_old"
+            
     is_owner = False
     is_following = False
     categories = Podcast.objects.get(name=podcast.name).categories.all()
@@ -86,7 +93,8 @@ def PodcastView(request,slug):
         "is_owner":is_owner,
         "is_following":is_following,
         "episodes":episodes,
-        "categories":categories
+        "categories":categories,
+        "sort_by":sort_by
     }            
     return render(request, template_name, context=context)
                     
