@@ -8,6 +8,9 @@
 />
 {% endblock %} {% block content %}
 <div class="mt-5 row">
+  <a href="{% url 'core:podcast' podcast.slug%}" class="text-light mb-5"
+    >&larr; Go back to episodes list</a
+  >
   <div class="info-section col-lg-4">
     <div class="episode-image">
       {% if episode.episode_thumbnail %}
