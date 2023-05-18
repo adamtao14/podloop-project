@@ -1,3 +1,3 @@
 # podloop-project
 
-Project for my third year Tenlogie Web class
+Project for my third year Tecnologie Web class
