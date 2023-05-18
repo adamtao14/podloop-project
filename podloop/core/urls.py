@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import home
-from .views import CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView
+from .views import CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView,EpisodeView,ApiFollow,ApiUnfollow,ApiIsAuth,ApiGetEpisodeUserInfo,ApiEpisodeLike,ApiEpisodeDislike
 from .models import *
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -83,6 +83,13 @@ urlpatterns = [
     path('podcasts/<slug:slug>', PodcastView, name='podcast'),
     path('podcasts/<slug:slug>/follow', login_required(FollowView), name='follow'),
     path('podcasts/<slug:slug>/unfollow', login_required(UnfollowView), name='unfollow'),
+    path('podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>', EpisodeView, name='episode'),
+    path('api/podcasts/<slug:podcast_slug>/follow', ApiFollow),
+    path('api/podcasts/<slug:podcast_slug>/unfollow', ApiUnfollow),
+    path('api/is-authenticated', ApiIsAuth),
+    path('api/podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>', ApiGetEpisodeUserInfo),
+    path('api/podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>/like', ApiEpisodeLike),
+    path('api/podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>/dislike', ApiEpisodeDislike),
     
 ]
 

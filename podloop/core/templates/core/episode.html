@@ -1,0 +1,86 @@
+{% extends 'core/base.html' %} {% load static %} {% load custom_filters %}
+{%block head %}
+<link rel="stylesheet" href="{% static 'episode.css' %}" />
+<link rel="stylesheet" href="{% static 'badge.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+/>
+{% endblock %} {% block content %}
+<div class="mt-5 row">
+  <div class="info-section col-lg-4">
+    <div class="episode-image">
+      {% if episode.episode_thumbnail %}
+      <img
+        src="{{ MEDIA_URL }}{{episode.episode_thumbnail}}"
+        class="img-fluid"
+        id="episode-thumbnail"
+        alt="Podcast thumbnail"
+      />
+      {% else %}
+      <img
+        src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
+        class="img-fluid"
+        id="episode-thumbnail"
+        alt="Podcast thumbnail"
+      />
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-lg-8 mt-4">
+    <h1 class="text-light">{{episode.title}}</h1>
+    <h5 class="text-warning">{{owner.username}}</h5>
+    <!--
+        
+        <div class="category-list mt-3">
+            {% for category in categories %}
+            <a href="{% url 'core:category-detail' category.slug%}"
+            ><span class="badge rounded-pill">{{category.name}}</span></a
+            >
+            {% endfor %}
+        </div>
+    -->
+    <div class="follow-section row mt-5" style="">
+      <div class="col-6 d-flex align-items-end">
+        <p class="text-light align-text-bottom mb-0" id="followers"></p>
+      </div>
+      <div
+        class="col-6 d-flex justify-content-around"
+        id="follow_section"
+      ></div>
+    </div>
+  </div>
+  {% if user.is_authenticated %}
+  <audio class="mt-5" controls>
+    <source src="{{ MEDIA_URL }}{{episode.audio}}" type="audio/ogg" />
+    Your browser does not support the audio tag.
+  </audio>
+
+  <div class="d-flex justify-content-center mt-3" id="like_section">
+    <div id="like_button"></div>
+    <p class="text-light ms-2 me-2" id="like_count"></p>
+  </div>
+  <hr class="text-light mt-3" />
+  {% else %}
+  <h3 class="text-light mt-5 text-center">
+    Login to stream,comment and like this episode
+  </h3>
+  {% endif %}
+  <h2 class="text-light">Description</h2>
+  <p class="lh-base text-light mt-2">{{episode.description}}</p>
+  <hr class="text-light mt-3" />
+  <h2 class="text-light">Comments</h2>
+</div>
+
+{% endblock %} {% block scripts %}
+<script src="{% static 'js/episodeFunctions.js' %}"></script>
+<script>
+  // Saving all the data i will need from the backend in Django to backend in Javascript
+  let dataFrontEnd = {
+    episode_slug: "{{episode.slug}}",
+    podcast_slug: "{{podcast.slug}}",
+  };
+
+  init(dataFrontEnd);
+</script>
+{% endblock %}

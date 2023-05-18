@@ -50,8 +50,14 @@ class Episode(models.Model):
     episode_thumbnail = models.FileField(upload_to='images/',blank=True, validators=[validate_image_file])
     podcast = models.ForeignKey(Podcast,on_delete=models.CASCADE,related_name="episodes")
     is_private = models.BooleanField(default=False,blank=False)
-    length = models.CharField(max_length=30, blank=True) 
+    length = models.CharField(max_length=30, blank=True)
+    slug = models.CharField(max_length=500,null=True)
     class Meta:
+        constraints = [
+                models.UniqueConstraint(
+                    fields=['podcast', 'title'], name='id_episode'
+                )
+            ]
         verbose_name_plural = "Episodes"
     
     def __str__(self):
