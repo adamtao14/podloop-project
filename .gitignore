@@ -1,0 +1,4 @@
+podloop/.env
+podloop/db.sqlite3
+Pipfile
+podloop/media
