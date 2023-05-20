@@ -107,6 +107,7 @@ class EpisodeComment(models.Model):
     text = models.CharField(max_length=500, blank=False)
     owner = models.ForeignKey(User,on_delete=models.CASCADE)
     parent_comment = models.ForeignKey('self',on_delete=models.CASCADE,null=True,default=None)
+    date = models.DateTimeField(default=now)
     
     class Meta:
         verbose_name_plural = "EpisodeComments"

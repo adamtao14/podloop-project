@@ -1,13 +1,13 @@
 {% extends 'core/base.html' %} {% load static %} {% load custom_filters %}
 {%block head %}
-<link rel="stylesheet" href="{% static 'episode.css' %}" />
-<link rel="stylesheet" href="{% static 'badge.css' %}" />
+<link rel="stylesheet" href="{% static 'css/episode.css' %}" />
+<link rel="stylesheet" href="{% static 'css/badge.css' %}" />
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
 />
 {% endblock %} {% block content %}
-<div class="mt-5 row">
+<div class="mt-5 row mb-5">
   <a href="{% url 'core:podcast' podcast.slug%}" class="text-light mb-5"
     >&larr; Go back to episodes list</a
   >
@@ -43,36 +43,121 @@
             {% endfor %}
         </div>
     -->
-    <div class="follow-section row mt-5" style="">
-      <div class="col-6 d-flex align-items-end">
-        <p class="text-light align-text-bottom mb-0" id="followers"></p>
+    <div class="row">
+      <div class="follow-section mt-5 col-8 row" style="">
+        <div class="col-sm-3" id="follow_section"></div>
+        <div class="col-sm-8">
+          <p class="text-light align-text-bottom mt-1" id="followers"></p>
+        </div>
       </div>
-      <div
-        class="col-6 d-flex justify-content-around"
-        id="follow_section"
-      ></div>
+      <div class="col-4">
+        <div class="d-flex justify-content-center mt-5" id="like_section">
+          <div id="like_button" class="mt-1"></div>
+          <p class="text-light ms-2 me-2 mt-1" id="like_count"></p>
+        </div>
+      </div>
     </div>
   </div>
   {% if user.is_authenticated %}
-  <audio class="mt-5" controls>
+  <audio class="mt-5" controls preload="metadata">
     <source src="{{ MEDIA_URL }}{{episode.audio}}" type="audio/ogg" />
     Your browser does not support the audio tag.
   </audio>
 
-  <div class="d-flex justify-content-center mt-3" id="like_section">
-    <div id="like_button"></div>
-    <p class="text-light ms-2 me-2" id="like_count"></p>
+  <hr class="text-light mt-3" />
+  <!--DESCRIPTION SECTION-->
+  <h2 class="text-light">Description</h2>
+  <p>
+    <a
+      class="text-warning"
+      data-bs-toggle="collapse"
+      href="#description"
+      role="button"
+      aria-expanded="false"
+      aria-controls="description"
+    >
+      Show
+    </a>
+  </p>
+  <div class="collapse" id="description">
+    <div class="card card-body bg-dark text-light">{{episode.description}}</div>
   </div>
   <hr class="text-light mt-3" />
+  <!--CREATE COMMENT-->
+  <div class="comment-section">
+    <h2 class="text-light"><span id="comments_count">12</span> Comments</h2>
+    <form class="form-comment row mt-4" id="post_comment_form">
+      {% csrf_token %}
+      <div class="mb-3 col-md-6">
+        <input
+          type="text"
+          class="form-control"
+          id="comment"
+          placeholder="Write a comment..."
+          maxlength="500"
+          required
+        />
+        <input type="submit" class="btn btn-success mt-3" value="post" />
+      </div>
+    </form>
+    <div id="success_alert" class="row"></div>
+    <hr class="text-light mt-3" />
+    <!--OTHER USERS COMMENTS-->
+    <section class="comments" id="comments"></section>
+    <!--MODAL REPLY-->
+    <div class="modal-section">
+      <div
+        class="modal fade"
+        id="reply_modal"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="reply_header"></h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <form class="form-comment row mt-4" id="post_reply_form">
+                {% csrf_token %}
+                <input type="hidden" id="parent_comment" value="" />
+                <div class="mb-3 col-md-12">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="reply"
+                    placeholder="Write a comment..."
+                    maxlength="500"
+                    required
+                  />
+                  <input
+                    type="submit"
+                    class="btn btn-success mt-3"
+                    value="post"
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {% else %}
   <h3 class="text-light mt-5 text-center">
     Login to stream,comment and like this episode
   </h3>
   {% endif %}
-  <h2 class="text-light">Description</h2>
-  <p class="lh-base text-light mt-2">{{episode.description}}</p>
-  <hr class="text-light mt-3" />
-  <h2 class="text-light">Comments</h2>
 </div>
 
 {% endblock %} {% block scripts %}
