@@ -1,0 +1,15 @@
+.img-container {
+    width: 200px;
+    height: 200px;
+}
+
+#profile_picture {
+    border-radius: 50%;
+    object-fit: cover;
+    height: 175px;
+    max-width: 175px;
+}
+
+.btn-option {
+    max-width: 250px;
+}

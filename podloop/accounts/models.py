@@ -47,7 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=now, blank=False)
     last_login =  models.DateTimeField(blank=True, null=True)
     
-    link_profile_picture = models.ImageField(upload_to='images')
+    link_profile_picture = models.ImageField(upload_to='images/')
     objects = CustomUserManager()
     
     USERNAME_FIELD = 'email'

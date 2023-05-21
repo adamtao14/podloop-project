@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %} 
+{% load static %}
+{% block title %} Profile {%endblock %} 
+{% block head %} 
+<link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+{% endblock %} 
+{% block content %}
+<div class="row">
+  {% if success_email_change %}
+    <div class="alert alert-success alert-dismissible fade show mt-5" role="alert">
+        {{success_email_change}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+  <div class="row mt-5">
+    <div class="img-container ms-auto me-auto ps-0 pe-0">
+      {% if user.link_profile_picture %}
+      <img src="{{ MEDIA_URL }}{{user.link_profile_picture}}" id="profile_picture"/>
+      {% else %}
+      <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" id="profile_picture"/>
+      {% endif %}
+    </div>
+    <div class="profile-info row text-center">
+      <h1 class="text-light mt-3">{{user.name}} {{user.last_name}}</h1>
+      <p class="text-warning mt-1">{{user.username}}</p>
+      
+    </div>
+    <div class="row d-flex justify-content-center">
+      <button class="btn btn-warning col-sm-6 btn-option me-3 mt-2" data-bs-toggle="modal" data-bs-target="#edit_profile">
+        Edit profile
+      </button>
+      <a class="btn btn-warning col-sm-6 btn-option me-3 mt-2" href="#">
+        Create podcast
+      </a>
+    </div>
+    <div class="row mt-5 d-flex justify-content-center pe-0">
+      <div class="container-form col-lg-6 mx-auto">
+        <form method="post" class="card px-4 py-3 mx-auto" novalidate enctype="multipart/form-data">
+          {% csrf_token %}
+          {% for field in form %}
+                  {{ field.label_tag }} 
+                  {{ field }}
+                  {% if field.errors %}
+                      <small class="text-danger mb-2">{{ field.errors|striptags }}</small> 
+                  {% endif %}
+          {% endfor %}
+          
+          {% if success_message %}
+          <h6 class="text-success">{{success_message}}</h6>
+          {% else %}
+          <ul>
+              {% for error in error_message %}
+              <li class="text-danger">{{error}}</li>
+              {% endfor %}
+          </ul>
+          {% endif%}
+          <input type="submit" value="Update" class="btn btn-warning full-width mb-3">
+      </form>
+      </div>
+    </div>
+
+  <div class="container mt-5">
+    
+</div>
+</div>
+
+{% endblock %}

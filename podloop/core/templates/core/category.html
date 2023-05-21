@@ -1,5 +1,8 @@
 {% extends 'core/base.html' %} 
 {% load static %}
+{% block title %} 
+{{category.name}}
+{% endblock %}
 {% block head %}
 <link rel="stylesheet" href="{% static 'css/category.css' %}">
 <link rel="stylesheet" href="{% static 'css/badge.css' %}">

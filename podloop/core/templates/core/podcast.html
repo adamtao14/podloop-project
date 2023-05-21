@@ -1,5 +1,7 @@
-{% extends 'core/base.html' %} {% load static %} {% load custom_filters %}
+{% extends 'core/base.html' %} {% load static %} {% load custom_filters %} 
+{%block title %} {{podcast.name}} {% endblock %} 
 {%block head %}
+
 <link rel="stylesheet" href="{% static 'css/episode.css' %}" />
 <link rel="stylesheet" href="{% static 'css/badge.css' %}" />
 

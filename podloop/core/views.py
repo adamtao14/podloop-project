@@ -1,10 +1,15 @@
 import json
+from urllib.parse import urlencode
+import uuid
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import ListView,View
-from .models import Category,Podcast,Episode,EpisodeLike
+from django.views.generic import ListView,View,UpdateView
+from django.urls import reverse
+from accounts.models import EmailVerification
+from accounts.utils import Util
+from .models import Category,Podcast,Episode
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from accounts.forms import ProfileForm
 
 
 User = get_user_model()
@@ -131,5 +136,76 @@ def EpisodeView(request,podcast_slug,episode_slug):
         "owner":owner,
     }            
     return render(request, template_name, context=context)
+
+
+class ProfileView(View):
+    template_name="core/profile.html" 
+    form_class = ProfileForm
+    def get(self, request):
+        if request.user.is_authenticated:
+            
+            
+            current_user = User.objects.get(id=request.user.id)
+            form = self.form_class(initial={
+                'email': current_user.email,
+                'name': current_user.name,
+                'last_name': current_user.last_name,
+                'username': current_user.username,
+            })
+            
+            success_email_change = request.GET.get('success_email_change')
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_email_change':success_email_change})
+    
+    def post(self, request):
+        message = []
+        current_user = User.objects.get(id=request.user.id)
+        form = self.form_class(request.POST,request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            last_name = form.cleaned_data.get("last_name")
+            username = form.cleaned_data.get("username")
+            email = form.cleaned_data.get("email")
+            link_profile_picture = form.cleaned_data.get("link_profile_picture")
+            print("pp:",link_profile_picture)
+            if name == current_user.name and last_name == current_user.last_name and username == current_user.username and email == current_user.email and not link_profile_picture :
+                message = "No changes made"
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message})
+            else:
+                if User.objects.filter(username=username).exists() and current_user.username != username:
+                    message.append("Username already exists")
+                if User.objects.filter(email=email).exists() and current_user.email != email:
+                    message.append("Email already exists")    
+                
+                if message != []:
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message})
+
+                current_user.name = name
+                current_user.last_name = last_name
+                current_user.username = username
+                if link_profile_picture:
+                    current_user.link_profile_picture = link_profile_picture
+
+                if current_user.email != email:
+                    current_user.email = email
+                    current_user.is_email_verified = False
+                    current_user.save()
+                    
+                    verify_code = uuid.uuid1()
+                    new_email_verification = EmailVerification(user=current_user,code=verify_code)
+                    new_email_verification.save()
+                    
+                    Util.send_confirm_email(email,verify_code)
+                
+                    
+                    message = "Your email has been updated, please verify it at the link we sent you"
+                    url = reverse('core:profile')+ '?' + urlencode({'success_email_change': message})
+                    return redirect(url)
+                else:
+                    current_user.save()
+                    message = "Updated successfully"
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message})
+        else:
+            message.append("Invalid data")
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message})
 
 

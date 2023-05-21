@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.db import models
 
-user = get_user_model()
+User = get_user_model()
 
 class LoginForm(forms.Form):
     email = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control mb-3'}))
@@ -26,8 +26,12 @@ class PasswordModifyForm(forms.Form):
         abstract = True
         
 class ChangePasswordForm(PasswordModifyForm):
-    current_password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={'class':'form-control mb-3'}))    
+    current_password = forms.CharField(required=True, widget=forms.PasswordInput(attrs={'class':'form-control mb-3'}))
     
-  
-
-
+class ProfileForm(forms.Form):
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class':'form-control mb-3'}))
+    name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control mb-3'}))
+    last_name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control mb-3'}))
+    username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control mb-3'}))
+    link_profile_picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'form-control mb-3'}))
+    
