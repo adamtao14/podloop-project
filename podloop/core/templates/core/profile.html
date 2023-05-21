@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
 {% endblock %} 
 {% block content %}
-<div class="row">
+<div class="row mx-auto">
   {% if success_email_change %}
     <div class="alert alert-success alert-dismissible fade show mt-5" role="alert">
         {{success_email_change}}
@@ -22,19 +22,23 @@
       {% endif %}
     </div>
     <div class="profile-info row text-center">
-      <h1 class="text-light mt-3">{{user.name}} {{user.last_name}}</h1>
-      <p class="text-warning mt-1">{{user.username}}</p>
+      <h1 class="text-light mt-3">{{user.name|title }} {{user.last_name|title }}</h1>
+      <p class="text-warning mt-1">@{{user.username}}</p>
       
     </div>
-    <div class="row d-flex justify-content-center">
-      <button class="btn btn-warning col-sm-6 btn-option me-3 mt-2" data-bs-toggle="modal" data-bs-target="#edit_profile">
-        Edit profile
-      </button>
+    <div class="row d-flex justify-content-center mx-auto">
+      
+      {% if user.is_creator %}
       <a class="btn btn-warning col-sm-6 btn-option me-3 mt-2" href="#">
-        Create podcast
+        Creator studio
       </a>
+      {% else %}
+      <a class="btn btn-warning col-sm-6 btn-option me-3 mt-2" href="#">
+        Become creator
+      </a>
+      {% endif %}
     </div>
-    <div class="row mt-5 d-flex justify-content-center pe-0">
+    <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
       <div class="container-form col-lg-6 mx-auto">
         <form method="post" class="card px-4 py-3 mx-auto" novalidate enctype="multipart/form-data">
           {% csrf_token %}
@@ -60,9 +64,8 @@
       </div>
     </div>
 
-  <div class="container mt-5">
     
 </div>
-</div>
+
 
 {% endblock %}

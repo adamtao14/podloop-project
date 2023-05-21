@@ -6,5 +6,5 @@
 <h1 class="text-light">Ciao {{user.username}}</h1>
 <a href="{% url 'accounts:logout' %}">Logout</a>
 {% else %}
-<h1>Non sei loggato</h1>
+<h1 class="text-light">Non sei loggato</h1>
 {% endif %} {% endblock %}
