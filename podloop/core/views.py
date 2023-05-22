@@ -250,7 +250,7 @@ class CreatorView(View):
             user_podcasts = Podcast.objects.filter(owner=current_user)
             return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcasts':user_podcasts})
         else:
-            return render(reverse('core:become-creator'))
+            return redirect(reverse('core:become-creator'))
         
     def post(self, request):
         message = []
@@ -289,7 +289,76 @@ class CreatorView(View):
             
         else:
             message.append("Invalid data")
-            return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message})
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcasts':user_podcasts})
 
 
-    
+class PodcastEditView(View):
+    template_name = 'core/edit_podcast.html'
+    form_class = PodcastForm
+    def get(self,request,slug):
+        current_user = User.objects.get(id=request.user.id)
+        podcast = get_object_or_404(Podcast,slug=slug)
+        episodes = podcast.episodes.all()
+        if current_user == podcast.owner:
+            list_categories = Category.objects.values_list('name', flat=True)
+            choices = [(value, value) for value in list_categories]
+            preselected_choices = [value for value in podcast.categories.all()]
+            form = self.form_class(choices=choices,initial={
+                'name': podcast.name,
+                'description': podcast.description,
+                'categories': preselected_choices,
+            })
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes})
+        else:
+            return redirect(reverse('core:profile'))
+    def post(self,request,slug):
+        message = []
+        current_user = User.objects.get(id=request.user.id)
+        list_categories = Category.objects.values_list('name', flat=True)
+        choices = [(value, value) for value in list_categories]
+        form = self.form_class(choices,request.POST,request.FILES)
+        podcast = get_object_or_404(Podcast,slug=slug)
+        episodes = podcast.episodes.all()
+        preselected_choices = [value for value in podcast.categories.all().values_list('name',flat=True)]
+        if form.is_valid():
+            
+            
+            name = form.cleaned_data.get("name")
+            description = form.cleaned_data.get("description")
+            categories = form.cleaned_data.get("categories")
+            podcast_thumbnail = form.cleaned_data.get("podcast_thumbnail")
+
+            if name==podcast.name and description == podcast.description and set(preselected_choices) == set(categories) and not podcast_thumbnail:
+                message = "No changes made"
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message, 'podcast':podcast, 'episodes':episodes})
+                
+            if name != podcast.name:
+                if Podcast.objects.filter(name=name).exists():
+                    message.append("A podcast with this name already exists")
+            if message != []:
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episodes':episodes})
+            
+            podcast.name = name
+            podcast.slug = slugify(name)
+            podcast.description = description
+            podcast.podcast_thumbnail = podcast_thumbnail
+            podcast.save()
+            podcast.categories.clear()
+            for category in categories:
+                chosen_category = Category.objects.get(name=category)
+                podcast.categories.add(chosen_category)
+            podcast.save()
+            #empty form
+            preselected_choices = [value for value in podcast.categories.all().values_list('name',flat=True)]
+            form = self.form_class(choices=choices,initial={
+                'name': podcast.name,
+                'description': podcast.description,
+                'categories': preselected_choices,
+            })
+
+            
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes})
+            
+        else:
+            message.append("Invalid data")
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episodes':episodes})

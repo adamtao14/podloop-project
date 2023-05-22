@@ -7,12 +7,12 @@
 {% block content %}
 <div class="row mx-auto">
   <div class="row mt-5">
-    <h1 class="text-light text-center"> Creator studio</h1>
+    <h1 class="text-light text-center"> Edit <span class="text-warning">{{podcast.name}}</span></h1>
   </div>
   <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
     
     <div class="container-form col-lg-6 mx-auto mt-4">
-      <h2 class="text-light text-center mb-3">Create a podcast</h2>
+        <h2 class="text-light text-center mb-3">Edit podcast</h2>
       <form method="post" class="card px-4 py-3 mx-auto" novalidate enctype="multipart/form-data">
         {% csrf_token %}
         {% for field in form %}
@@ -36,24 +36,24 @@
         <input type="submit" value="Update" class="btn btn-warning full-width mb-3">
       </form>
     </div>
-    {% if podcasts %}
+    {% if episodes %}
     <div class="col-lg-6 mt-4">
-      <h2 class="text-light text-center mb-3">Your podcasts</h2>
+      <h2 class="text-light text-center mb-3">Your episodes</h2>
       
-      {% for podcast in podcasts %}
+      {% for episode in episodes %}
       <div class="card mb-3" style="max-width: 540px;">
         <div class="row g-0">
           <div class="col-md-4">
-            {% if podcast.podcast_thumbnail %}
-            <img src="{{MEDIA_URL}}{{podcast.podcast_thumbnail}}" class="card-img-top mx-auto d-block" alt="..." style="max-width:200px;height:100%;object-fit:cover;">
+            {% if episode.episode_thumbnail %}
+            <img src="{{MEDIA_URL}}{{episode.episode_thumbnail}}" class="card-img-top mx-auto d-block" alt="..." style="max-width:200px;height:100%;object-fit:cover;">
             {% else %}
             <img src="{{MEDIA_URL}}images/default_podcast_thumbnail.jpg" class="card-img-top mx-auto d-block" alt="..." style="max-width:200px;height:100%;object-fit:cover;">
             {% endif %}
           </div>
           <div class="col-md-8">
             <div class="card-body">
-              <a href="{% url 'core:podcast' podcast.slug %}" class="text-decoration-none text-dark"><h5 class="card-title">{{podcast.name}}</h5></a>
-              <p class="">{{podcast.episodes.count}} episodes</p>
+                <p class="text-dark">{{podcast.slug}}/{{episode.slug}}</p>
+              <a href="{% url 'core:episode' podcast.slug episode.slug %}" class="text-decoration-none text-dark"><h5 class="card-title">{{episode.title}}</h5></a>
               <div class="row d-flex justify-content-start">
                 <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-warning mt-4 ms-1 col-sm-3">Edit</a>
                 <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-success mt-4 ms-1 col-sm-3 ">Upload</a>
