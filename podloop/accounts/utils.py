@@ -53,6 +53,22 @@ class Util:
         }
         
         Util.send_email(data)
+        
+    @staticmethod
+    def send_creator_email(send_to,code):
+        link = "http://127.0.0.1:8000/confirm-email/" + str(code)
+        data = {
+            'subject':'Confirm your PodLoop account\'s email',
+            'body': '''
+                Hello there!\n 
+                You are receiving this email because you want to become a creator for PodLoop.\n 
+                Please click the link below to verify your email.\n
+                {}\n
+                '''.format(link),
+            'to_email':send_to,
+        }
+        
+        Util.send_email(data)
     
     @staticmethod    
     def validate_password(password):

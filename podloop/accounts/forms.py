@@ -35,3 +35,13 @@ class ProfileForm(forms.Form):
     username = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control mb-3'}))
     link_profile_picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'form-control mb-3'}))
     
+class PodcastForm(forms.Form):
+    name = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control mb-3'}))
+    description = forms.CharField(required=True, max_length=500, widget=forms.Textarea(attrs={'class':'form-control mb-3'}))
+    podcast_thumbnail = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'form-control mb-3'}))
+    categories = forms.MultipleChoiceField(required=True)
+    
+    def __init__(self, choices, *args, **kwargs):
+        super(PodcastForm, self).__init__(*args, **kwargs)
+        self.fields['categories'].choices = choices
+    

@@ -13,3 +13,8 @@
 .btn-option {
     max-width: 250px;
 }
+
+#email_sent_image {
+    width: 250px;
+    height: 250px;
+}

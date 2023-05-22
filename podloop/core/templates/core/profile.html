@@ -29,11 +29,11 @@
     <div class="row d-flex justify-content-center mx-auto">
       
       {% if user.is_creator %}
-      <a class="btn btn-warning col-sm-6 btn-option me-3 mt-2" href="#">
+      <a class="btn btn-warning col-sm-6 btn-option me-3 mt-2" href="{% url 'core:creator' %}">
         Creator studio
       </a>
       {% else %}
-      <a class="btn btn-warning col-sm-6 btn-option me-3 mt-2" href="#">
+      <a class="btn btn-warning col-sm-6 btn-option me-3 mt-2" href="{% url 'core:become-creator' %}">
         Become creator
       </a>
       {% endif %}

@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %} 
+{% load static %}
+{% block title %} Creator page {%endblock %} 
+{% block head %} 
+<link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+{% endblock %} 
+{% block content %}
+<div class="row mx-auto">
+    <h1 class="text-light text-center mt-5"> Become a creator</h1>
+    {% if is_not_verified %}
+    <div class="alert alert-warning alert-dismissible fade show mt-5" role="alert">
+        {{is_not_verified}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <img src="{{MEDIA_URL}}images/default/email_sent.svg" id="email_sent_image" class="mx-auto"/>
+    <h6 class="text-light text-center mt-5">Verify your email and then come back to this page, to complete become a creator</h6>
+    {% endif %}
+    {% if not user.is_creator %}
+    <div class="row mt-5 mx-auto">
+        <h3 class="text-light text-center"><span class="text-warning">{{user.name|title}}</span> get ready to become a PodLooper </h3>
+        <p class="text-light text-center mt-3">Read the terms and conditions and then click to accept</p>
+        <div class="row d-flex justify-content-center mt-4 mx-auto">
+            <button type="button" class="btn btn-warning col-sm-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Terms and conditions
+            </button>
+        </div>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Terms and Conditions for PodLoop Podcast Platform:
+                            <br><br>
+                            1. Acceptance of Terms: By using the PodLoop podcast platform and uploading episodes, you agree to abide by these terms and conditions.
+                            <br><br>
+                            3. Content Ownership: You retain ownership of the content you upload to PodLoop. However, by uploading content, you grant PodLoop a non-exclusive, royalty-free, worldwide license to host, distribute, and promote your podcast episodes on the platform.
+                            <br><br>
+                            4. Content Guidelines: You are solely responsible for the content you upload. You must not upload any content that is unlawful, defamatory, obscene, infringing on intellectual property rights, or violates any third-party rights.
+                            <br><br>
+                            5. Copyright Infringement: PodLoop respects intellectual property rights. If you believe your copyrighted material has been used without authorization, please notify us with the necessary details for prompt action.
+                            <br><br>
+                            6. User Conduct: You agree to use PodLoop in a responsible and lawful manner. You must not engage in any activities that disrupt or interfere with the platform's functioning, compromise its security, or violate any applicable laws or regulations.
+                            <br><br>
+                            7. Privacy: PodLoop collects and processes personal information as outlined in its Privacy Policy. By using the platform, you consent to the collection, storage, and use of your personal information in accordance with the Privacy Policy.
+                            <br><br>
+                            8. Indemnification: You agree to indemnify and hold PodLoop and its affiliates, employees, and partners harmless from any claims, damages, liabilities, or expenses arising from your use of the platform or any violation of these terms and conditions.
+                            <br><br>
+                            9. Termination: PodLoop reserves the right to suspend or terminate your access to the platform at any time, with or without cause, without prior notice or liability.
+                            <br><br>
+                            10. Modifications: PodLoop may update or modify these terms and conditions from time to time. Any changes will be effective upon their posting on the platform. It is your responsibility to review the terms periodically and ensure compliance.
+                            <br><br>
+                            11. Limitation of Liability: PodLoop shall not be liable for any direct, indirect, incidental, special, consequential, or exemplary damages resulting from your use of the platform or any interruptions, errors, or delays in its operation.
+                            <br><br>
+                            12. Governing Law: These terms and conditions shall be governed by and construed in accordance with the laws of the jurisdiction in which PodLoop operates.
+                            <br><br>
+                            13. Severability: If any provision of these terms and conditions is found to be invalid or unenforceable, the remaining provisions shall continue to be valid and enforceable to the fullest extent permitted by law.
+                        </p>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'core:creator' %}" class="btn btn-success col-sm-4 mx-auto mt-5">I agree to the terms,make me a creator</a>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}

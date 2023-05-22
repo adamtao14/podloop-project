@@ -2,16 +2,19 @@
     background-color: #f1ad4e;
     max-width: 540px;
 }
+
 .img {
-height: 150px;
-width: 150px;
-object-fit: cover;
-border-radius: 50%;
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    border-radius: 50%;
 }
-.link-podcast{
-text-decoration: none;
-color:black;
+
+.link-podcast {
+    text-decoration: none;
+    color: black;
 }
-.link-podcast:hover{
-color:white;
+
+.link-podcast:hover {
+    color: white;
 }

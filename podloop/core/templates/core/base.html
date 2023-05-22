@@ -53,9 +53,11 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item pe-1" href="{% url 'core:profile' %}">Profile</a></li>
+                  {% if user.is_creator %}
                   <li>
-                    <a class="dropdown-item pe-1" href="#">Another action</a>
+                    <a class="dropdown-item pe-1" href="{% url 'core:creator' %}">Creator studio</a>
                   </li>
+                  {% endif %}
                   <hr />
                   <li>
                     <a

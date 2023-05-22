@@ -1,15 +1,16 @@
 import json
 from urllib.parse import urlencode
 import uuid
+from django.utils.text import slugify
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import ListView,View,UpdateView
+from django.views.generic import ListView,View
 from django.urls import reverse
 from accounts.models import EmailVerification
 from accounts.utils import Util
 from .models import Category,Podcast,Episode
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
-from accounts.forms import ProfileForm
+from accounts.forms import ProfileForm,PodcastForm
 
 
 User = get_user_model()
@@ -166,7 +167,7 @@ class ProfileView(View):
             username = form.cleaned_data.get("username")
             email = form.cleaned_data.get("email")
             link_profile_picture = form.cleaned_data.get("link_profile_picture")
-            print("pp:",link_profile_picture)
+
             if name == current_user.name and last_name == current_user.last_name and username == current_user.username and email == current_user.email and not link_profile_picture :
                 message = "No changes made"
                 return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message})
@@ -209,3 +210,86 @@ class ProfileView(View):
             return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message})
 
 
+
+def BecomeCreator(request):
+    template_name="core/become_creator.html"
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        if current_user.is_creator:
+            return redirect(reverse('core:creator'))
+        else:
+            if current_user.is_email_verified:
+                return render(request, template_name, context={'user':current_user})   
+            else:
+            #if the user is not verified we send him an email to verify it
+            #first we check id he already has a link to verify it in the db,if so we delete it and make a new one
+                if EmailVerification.objects.filter(user_id=current_user).exists():
+                    EmailVerification.objects.filter(user_id=current_user).delete()
+                
+                verify_code = uuid.uuid1()
+                new_email_verification = EmailVerification(user=current_user,code=verify_code)
+                new_email_verification.save()
+                
+                Util.send_creator_email(current_user.email,verify_code)
+                message = "To become a creator you need to verify your email first, we sent you a link to do it in your email"
+                return render(request, template_name, context={'user':current_user,'is_not_verified':message})
+
+class CreatorView(View):
+    template_name = 'core/creator_page.html'
+    form_class = PodcastForm
+    def get(self, request):
+        current_user = User.objects.get(id=request.user.id)
+        if current_user.is_email_verified:
+            if not current_user.is_creator:
+                #the first time the user gets to this page after confirming the email, we can set him as a creator
+                current_user.is_creator = True
+                current_user.save()
+            list_categories = Category.objects.values_list('name', flat=True)
+            choices = [(value, value) for value in list_categories]
+            form = self.form_class(choices=choices)
+            user_podcasts = Podcast.objects.filter(owner=current_user)
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcasts':user_podcasts})
+        else:
+            return render(reverse('core:become-creator'))
+        
+    def post(self, request):
+        message = []
+        current_user = User.objects.get(id=request.user.id)
+        list_categories = Category.objects.values_list('name', flat=True)
+        choices = [(value, value) for value in list_categories]
+        form = self.form_class(choices,request.POST,request.FILES)
+        user_podcasts = Podcast.objects.filter(owner=current_user)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            description = form.cleaned_data.get("description")
+            categories = form.cleaned_data.get("categories")
+            podcast_picture = form.cleaned_data.get("podcast_thumbnail")
+            
+            if Podcast.objects.filter(name=name).exists():
+                message.append("A podcast with this name already exists")
+            if message != []:
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcasts':user_podcasts})
+            
+            new_podcast = Podcast()
+            new_podcast.name = name
+            new_podcast.slug = slugify(name)
+            new_podcast.description = description
+            new_podcast.owner = current_user
+            new_podcast.podcast_thumbnail = podcast_picture
+            new_podcast.save()
+            for category in categories:
+                chosen_category = Category.objects.get(name=category)
+                new_podcast.categories.add(chosen_category)
+            new_podcast.save()
+            #empty form
+            form = self.form_class(choices)
+
+            
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcasts':user_podcasts})
+            
+        else:
+            message.append("Invalid data")
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message})
+
+
+    

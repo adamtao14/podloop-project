@@ -70,9 +70,27 @@
     </div>
   </div>
   <hr class="text-light mt-5" />
+  <!--DESCRIPTION SECTION-->
+  <h2 class="text-light">Description</h2>
+  <p>
+    <a
+      class="text-warning"
+      data-bs-toggle="collapse"
+      href="#description"
+      role="button"
+      aria-expanded="false"
+      aria-controls="description"
+    >
+      Show
+    </a>
+  </p>
+  <div class="collapse" id="description">
+    <div class="card card-body bg-dark text-light">{{podcast.description}}</div>
+  </div>
+  <hr class="text-light mt-3" />
   <div class="episodes-list">
     <div class="d-flex justify-content-between">
-      <h2 class="text-light mb-5">Episodes</h2>
+      <h2 class="text-light mb-5">{{podcast.episodes.count}} Episodes</h2>
       <div class="dropdown bg-dark">
         <button
           class="btn btn-secondary dropdown-toggle"
