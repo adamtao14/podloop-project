@@ -56,7 +56,7 @@
               <p class="">{{podcast.episodes.count}} episodes</p>
               <div class="row d-flex justify-content-start">
                 <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-warning mt-4 ms-1 col-sm-3">Edit</a>
-                <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-success mt-4 ms-1 col-sm-3 ">Upload</a>
+                <a href="{% url 'core:podcast-upload' podcast.slug %}" class="btn btn-success mt-4 ms-1 col-sm-3 ">Upload</a>
               </div>
             </div>
           </div>

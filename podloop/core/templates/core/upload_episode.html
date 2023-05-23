@@ -1,0 +1,84 @@
+{% extends 'core/base.html' %} 
+{% load static %}
+{% block title %} Creator page {%endblock %} 
+{% block head %} 
+
+{% endblock %} 
+{% block content %}
+<div class="row mx-auto">
+
+  <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
+    
+    <div class="container-form col-lg-6 mx-auto mt-4">
+      <h2 class="text-light text-center mb-3">Upload an episode</h2>
+      <a href="{% url 'core:creator' %}" class="text-light">&larr; Go back to creator studio</a>
+      <form method="post" class="card px-4 py-3 mx-auto mt-3" novalidate enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+                {{ field.label_tag }} 
+                {{ field }}
+                {% if field.errors %}
+                    <small class="text-danger mb-2">{{ field.errors|striptags }}</small> 
+                {% endif %}
+        {% endfor %}
+        {% if success_message %}
+        <h6 class="text-success">{{success_message}}</h6>
+        {% else %}
+        <ul>
+            {% for error in error_message %}
+            <li class="text-danger">{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif%}
+        <p class="text-dark" id="yo"></p>
+        <input type="submit" value="Upload" class="btn btn-warning full-width mb-3">
+      </form>
+    </div>
+  </div> 
+</div>
+
+
+{% endblock %}
+{% block scripts %}
+<script>
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        // Add a change event listener to the file input
+        document.getElementById("id_audio").addEventListener('change', function(){
+
+            // Obtain the uploaded file, you can change the logic if you are working with multiupload
+            var file = this.files[0];
+            
+            // Create instance of FileReader
+            var reader = new FileReader();
+
+            // When the file has been succesfully read
+            reader.onload = function (event) {
+
+                // Create an instance of AudioContext
+                var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+                // Asynchronously decode audio file data contained in an ArrayBuffer.
+                audioContext.decodeAudioData(event.target.result, function(buffer) {
+                    // Obtain the duration in seconds of the audio file (with milliseconds as well, a float value)
+                    var duration = buffer.duration;
+
+                    // example 12.3234 seconds
+                    document.getElementById("id_length").value = parseInt(duration);
+                    // Alternatively, just display the integer value with
+                    // parseInt(duration)
+                    // 12 seconds
+                });
+            };
+
+            // In case that the file couldn't be read
+            reader.onerror = function (event) {
+                console.error("An error ocurred reading the file: ", event);
+            };
+
+            // Read file as an ArrayBuffer, important !
+            reader.readAsArrayBuffer(file);
+        }, false);    
+    });
+</script>  
+{% endblock %}

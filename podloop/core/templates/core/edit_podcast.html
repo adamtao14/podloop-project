@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %} 
 {% load static %}
+{% load custom_filters %} 
 {% block title %} Creator page {%endblock %} 
 {% block head %} 
 
@@ -9,6 +10,7 @@
   <div class="row mt-5">
     <h1 class="text-light text-center"> Edit <span class="text-warning">{{podcast.name}}</span></h1>
   </div>
+  <a href="{% url 'core:creator' %}" class="text-light">&larr; Go back to creator studio</a>
   <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
     
     <div class="container-form col-lg-6 mx-auto mt-4">
@@ -38,7 +40,7 @@
     </div>
     {% if episodes %}
     <div class="col-lg-6 mt-4">
-      <h2 class="text-light text-center mb-3">Your episodes</h2>
+      <h2 class="text-light text-center mb-3">Episodes</h2>
       
       {% for episode in episodes %}
       <div class="card mb-3" style="max-width: 540px;">
@@ -52,11 +54,10 @@
           </div>
           <div class="col-md-8">
             <div class="card-body">
-                <p class="text-dark">{{podcast.slug}}/{{episode.slug}}</p>
               <a href="{% url 'core:episode' podcast.slug episode.slug %}" class="text-decoration-none text-dark"><h5 class="card-title">{{episode.title}}</h5></a>
+              <p class="text-warning">{{episode.length|seconds_to_minutes}}</p>
               <div class="row d-flex justify-content-start">
                 <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-warning mt-4 ms-1 col-sm-3">Edit</a>
-                <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-success mt-4 ms-1 col-sm-3 ">Upload</a>
               </div>
             </div>
           </div>

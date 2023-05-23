@@ -1,6 +1,8 @@
+import io
 import json
 from urllib.parse import urlencode
 import uuid
+from django.http import HttpResponse
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView,View
@@ -10,8 +12,10 @@ from accounts.utils import Util
 from .models import Category,Podcast,Episode
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
-from accounts.forms import ProfileForm,PodcastForm
-
+from accounts.forms import ProfileForm,PodcastForm,EpisodeForm
+from .validators import validate_audio_file
+from django.core.exceptions import ValidationError
+from pydub import AudioSegment
 
 User = get_user_model()
 
@@ -310,7 +314,8 @@ class PodcastEditView(View):
             })
             return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes})
         else:
-            return redirect(reverse('core:profile'))
+            #return 404
+            return HttpResponse(status=404)
     def post(self,request,slug):
         message = []
         current_user = User.objects.get(id=request.user.id)
@@ -341,7 +346,8 @@ class PodcastEditView(View):
             podcast.name = name
             podcast.slug = slugify(name)
             podcast.description = description
-            podcast.podcast_thumbnail = podcast_thumbnail
+            if podcast_thumbnail:
+                podcast.podcast_thumbnail = podcast_thumbnail
             podcast.save()
             podcast.categories.clear()
             for category in categories:
@@ -362,3 +368,59 @@ class PodcastEditView(View):
         else:
             message.append("Invalid data")
             return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episodes':episodes})
+
+
+class PodcastEpisodeUpload(View):
+    template_name = 'core/upload_episode.html'
+    form_class = EpisodeForm
+    def get(self,request,slug):
+        podcast = Podcast.objects.get(slug=slug)
+        current_user = User.objects.get(id=request.user.id)
+        if podcast.owner.id == current_user.id:
+            form = self.form_class()
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast})
+        else:
+            return HttpResponse(status=404)
+        
+    
+    def post(self,request,slug):
+        podcast = Podcast.objects.get(slug=slug)
+        current_user = User.objects.get(id=request.user.id)
+        message = []
+        if podcast.owner.id == current_user.id:
+            form = self.form_class(request.POST,request.FILES)
+            if form.is_valid():
+                title = form.cleaned_data.get("title")
+                description = form.cleaned_data.get("description")
+                audio = form.cleaned_data.get("audio")
+                episode_thumbnail = form.cleaned_data.get("episode_thumbnail")
+                is_private = form.cleaned_data.get("is_private")
+                length = form.cleaned_data.get("length")
+                
+                try: 
+                    validate_audio_file(audio)
+                except ValidationError:
+                    message.append("Audio must be of format [MP3, WAV, OGG] and size less than 250MB")
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast})
+                  
+                        
+                new_episode = Episode()
+                new_episode.podcast = podcast
+                new_episode.title = title
+                new_episode.slug = slugify(title)
+                new_episode.description = description
+                new_episode.is_private = is_private
+                new_episode.episode_thumbnail = episode_thumbnail
+                new_episode.audio = audio
+                new_episode.length = length
+                new_episode.save()
+                form = self.form_class()
+                message = "Episode uploaded successfully"
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message, 'podcast':podcast})
+            else:
+                message.append("Invalid data")
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast})
+        else:
+            return HttpResponse(status=404)
+                
+                

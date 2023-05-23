@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import home
-from .views import CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView,EpisodeView,ProfileView,CreatorView,BecomeCreator,PodcastEditView
+from .views import CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView,EpisodeView,ProfileView,CreatorView,BecomeCreator,PodcastEditView,PodcastEpisodeUpload
 from .models import *
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -82,6 +82,7 @@ urlpatterns = [
     path('categories/<slug:slug>', CategoryDetailView, name='category-detail'),
     path('podcasts/<slug:slug>', PodcastView, name='podcast'),
     path('podcasts/<slug:slug>/edit', login_required(PodcastEditView.as_view()), name='podcast-edit'),
+    path('podcasts/<slug:slug>/upload', login_required(PodcastEpisodeUpload.as_view()), name='podcast-upload'),
     path('podcasts/<slug:slug>/follow', login_required(FollowView), name='follow'),
     path('podcasts/<slug:slug>/unfollow', login_required(UnfollowView), name='unfollow'),
     path('podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>', EpisodeView, name='episode'),

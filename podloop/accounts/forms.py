@@ -44,4 +44,11 @@ class PodcastForm(forms.Form):
     def __init__(self, choices, *args, **kwargs):
         super(PodcastForm, self).__init__(*args, **kwargs)
         self.fields['categories'].choices = choices
-    
+        
+class EpisodeForm(forms.Form):
+    title = forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control mb-3'}))
+    description = forms.CharField(required=True, max_length=500, widget=forms.Textarea(attrs={'class':'form-control mb-3'}))
+    episode_thumbnail = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class':'form-control mb-3'}))
+    is_private = forms.BooleanField(required=False,widget=forms.CheckboxInput(attrs={'class':'form-check mb-3 me-auto'}))
+    audio = forms.FileField(required=True,widget=forms.FileInput(attrs={'class':'form-control mb-3'}))
+    length = forms.CharField(required=False,widget=forms.TextInput(attrs={'class':'form-control mb-3'}),disabled=True)

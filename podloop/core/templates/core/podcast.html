@@ -41,7 +41,7 @@
         {% if user.is_authenticated %} {% if is_owner %}
         <a
           class="btn btn-sm btn-warning"
-          href="{% url 'core:podcast' podcast.slug %}"
+          href="{% url 'core:podcast-edit' podcast.slug %}"
           >Edit</a
         >
         {% else %} {% if is_following %}
