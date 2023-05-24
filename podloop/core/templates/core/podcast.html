@@ -28,7 +28,7 @@
   </div>
   <div class="col-lg-8 mt-4">
     <h1 class="text-light">{{podcast.name}}</h1>
-    <h5 class="text-warning">{{owner.username}}</h5>
+    <h5 class="text-warning">@{{owner.username}}</h5>
     <div class="category-list mt-3">
       {% for category in categories %}
       <a href="{% url 'core:category-detail' category.slug%}"
@@ -90,7 +90,7 @@
   <hr class="text-light mt-3" />
   <div class="episodes-list">
     <div class="d-flex justify-content-between">
-      <h2 class="text-light mb-5">{{podcast.episodes.count}} Episodes</h2>
+      <h2 class="text-light mb-5">{{episodes.count}} Episodes</h2>
       <div class="dropdown bg-dark">
         <button
           class="btn btn-secondary dropdown-toggle"

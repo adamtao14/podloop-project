@@ -33,7 +33,7 @@
   </div>
   <div class="col-lg-8 mt-4">
     <h1 class="text-light">{{episode.title}}</h1>
-    <h5 class="text-warning">{{owner.username}}</h5>
+    <h5 class="text-warning">@{{owner.username}}</h5>
     <!--
         
         <div class="category-list mt-3">
@@ -64,7 +64,23 @@
     <source src="{{ MEDIA_URL }}{{episode.audio}}" type="audio/ogg" />
     Your browser does not support the audio tag.
   </audio>
-
+  {% if playlists %}
+  <div class="row d-flex justify-content-center mt-3">
+    <div class="dropdown" style="max-width:145px;">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Add to playlist
+      </button>
+      <ul class="dropdown-menu">
+        {% for playlist in playlists %}
+        <li><p class="dropdown-item mt-0 mb-0" style="cursor:pointer;" onClick="add_to_playlist({{playlist.id}})">{{playlist.name}}</p></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div id="added_episode" class="row">
+      
+    </div>
+  </div>
+  {% endif %}
   <hr class="text-light mt-3" />
   <!--DESCRIPTION SECTION-->
   <h2 class="text-light">Description</h2>

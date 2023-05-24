@@ -10,6 +10,7 @@ comment_section = document.getElementById("comments");
 success_alert = document.getElementById("success_alert");
 comments_count = document.getElementById("comments_count");
 modal = document.getElementById("reply_modal");
+episode_added_to_playlist = document.getElementById("added_episode");
 //listeners
 form_comment.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -28,23 +29,24 @@ async function call_api_post(api_url, data) {
   Object.entries(data).forEach(([key, value]) => {
     jsonObject[key] = value;
   });
-  await fetch(api_url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": data["csrfmiddlewaretoken"],
-    },
-    body: JSON.stringify(jsonObject),
-  })
-    .then(function (response) {
-      if (response.ok) {
-        return response.text();
-      }
-      throw new Error("Network response was not ok.");
-    })
-    .then(function (data) {})
-    .catch(function (error) {
+  try {
+    const response = await fetch(api_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": data["csrfmiddlewaretoken"],
+      },
+      body: JSON.stringify(jsonObject),
     });
+
+    if (response.ok) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
 }
 async function call_api_get(api_url) {
   await fetch(api_url)
@@ -121,23 +123,40 @@ async function comment(comment, is_reply, reply_to) {
   data["csrfmiddlewaretoken"] = csrf_token;
   data["is_reply"] = is_reply;
   data["reply_to"] = reply_to;
-  await call_api_post(api_url, data);
-  await sort_comments(dataBackEnd["sort_by"]);
+  result = await call_api_post(api_url, data);
   $(modal).modal("hide");
-  success_alert.innerHTML = `
-  <div
-      class="alert alert-success alert-dismissible fade show"
-      role="alert"
-    >
-      <strong>Comment created!</strong>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="alert"
-        aria-label="Close"
-      ></button>
-    </div>
-  `;
+  if(result){
+    success_alert.innerHTML = `
+    <div
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <strong>Comment created!</strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+    `;
+  }else{
+    success_alert.innerHTML = `
+    <div
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+      >
+        <strong>Could not create comment!</strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+    `;
+  }
+  await sort_comments(dataBackEnd["sort_by"]);
 }
 
 function reply_comment(id_parent_comment, reply_to) {
@@ -156,6 +175,46 @@ async function toggle_like_comment(id) {
   var api_url = `http://127.0.0.1:8000/api/comment/${id}/toggle-like`;
   await call_api_get(api_url);
   await sort_comments(dataBackEnd["sort_by"]);
+}
+
+async function add_to_playlist(id){
+  var api_url = `http://127.0.0.1:8000/api/podcasts/${dataBackEnd["podcast_slug"]}/episode/${dataBackEnd["episode_slug"]}/add-to-playlist/${id}`;
+  csrf_token = document.querySelector("#post_comment_form input[name='csrfmiddlewaretoken']").value;
+  data = {};
+  data["csrfmiddlewaretoken"] = csrf_token;
+  result = await call_api_post(api_url, data);
+  if (result){
+    episode_added_to_playlist.innerHTML = `
+    <div
+        class="alert alert-success alert-dismissible fade show mt-3"
+        role="alert"
+      >
+        <strong>Episode added!</strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+    `;
+  }else{
+    episode_added_to_playlist.innerHTML = `
+    <div
+        class="alert alert-danger alert-dismissible fade show mt-3"
+        role="alert"
+      >
+        <strong>Episode was not added!</strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+    `;
+  }
+
 }
 
 async function init(dataFrontEnd) {

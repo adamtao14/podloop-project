@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.urls import path
-from .views import ApiFollow,ApiUnfollow,ApiIsAuth,ApiGetEpisodeUserInfo,ApiPostComment,ApiGetComments,ApiToggleLikeComment,ApiDeleteComment,ApiToggleLikeEpisode,ApiToggleFollow,ApiDeletePodcast,ApiDeleteEpisode
+from .views import ApiFollow,ApiUnfollow,ApiIsAuth,ApiGetEpisodeUserInfo,ApiPostComment,ApiGetComments,ApiToggleLikeComment,ApiDeleteComment,ApiToggleLikeEpisode,ApiToggleFollow,ApiDeletePodcast,ApiDeleteEpisode,ApiAddEpisodeToPlaylist
 from django.conf.urls.static import static
 app_name = "api"
 
@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>/get-comments', ApiGetComments),
     path('api/podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>/toggle-like', ApiToggleLikeEpisode),
     path('api/podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>/delete', ApiDeleteEpisode),
+    path('api/podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>/add-to-playlist/<int:playlist_id>', ApiAddEpisodeToPlaylist),
 ]
 
 if settings.DEBUG:

@@ -64,6 +64,7 @@ async function delete_episode(){
     await call_api_post(api_url, data, 0);
 
 }
+
 function init(dataFrontend){
     dataBackEnd = dataFrontend;
 }

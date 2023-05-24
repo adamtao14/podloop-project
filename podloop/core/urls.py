@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import home
-from .views import CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView,EpisodeView,ProfileView,CreatorView,BecomeCreator,PodcastEditView,PodcastEpisodeUpload,EditEpisodeView
+from .views import CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView,EpisodeView,ProfileView,CreatorView,BecomeCreator,PodcastEditView,PodcastEpisodeUpload,EditEpisodeView,PlaylistCreateView,PlaylistEditView,PlaylistView,DeleteEpisodeFromPlaylist
 from .models import *
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -90,6 +90,10 @@ urlpatterns = [
     path('profile', login_required(ProfileView.as_view()), name='profile'),
     path('profile/creator', login_required(CreatorView.as_view()), name='creator'),
     path('profile/become-creator', login_required(BecomeCreator), name='become-creator'),
+    path('playlists/create', login_required(PlaylistCreateView.as_view()), name='playlist-create'),
+    path('playlists/<int:playlist_id>', PlaylistView, name='playlist'),
+    path('playlists/<int:playlist_id>/edit', login_required(PlaylistEditView.as_view()), name='playlist-edit'),
+    path('playlists/<int:playlist_id>/remove/<int:episode_id>', login_required(DeleteEpisodeFromPlaylist), name='playlist-episode-remove'),
 ]
 
 if settings.DEBUG:

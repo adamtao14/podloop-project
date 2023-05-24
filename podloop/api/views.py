@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from core.models import Podcast,EpisodeLike,Episode,EpisodeComment,EpisodeCommentLike
+from core.models import Podcast,EpisodeLike,Episode,EpisodeComment,EpisodeCommentLike,Playlist
 from django.utils.html import escape
 User = get_user_model()
 
@@ -229,6 +229,22 @@ def ApiDeleteEpisode(request,podcast_slug,episode_slug):
         current_user = User.objects.get(id=request.user.id)
         if episode.podcast.owner.id == current_user.id:
             episode.delete()
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=401)
+    else:
+        return HttpResponse(status=401)
+    
+    
+def ApiAddEpisodeToPlaylist(request,podcast_slug,episode_slug,playlist_id):
+    podcast = get_object_or_404(Podcast, slug=podcast_slug)
+    episode = get_object_or_404(Episode, slug=episode_slug, podcast=podcast)
+    playlist = get_object_or_404(Playlist,id=playlist_id)
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        if playlist.owner.id == current_user.id:
+            if not playlist.episodes.filter(id=episode.id).exists():
+                playlist.episodes.add(episode)
             return HttpResponse(status=200)
         else:
             return HttpResponse(status=401)

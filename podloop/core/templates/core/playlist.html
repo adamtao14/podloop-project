@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %} 
+{% load static %}
+{% load custom_filters %}
+{% block title %} Playlist {%endblock %} 
+{% block head %} 
+<link rel="stylesheet" href="{% static 'css/playlist.css' %}" />
+{% endblock %} 
+{% block content %}
+<div class="row mx-auto">
+
+  <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
+    
+    <div class="container-form mx-auto mt-4">
+      <h2 class="text-warning text-center mb-3">{{playlist.name|title}}</h2>
+      <a href="{% url 'core:profile' %}" class="text-light">&larr; Go back to profile</a>
+      <br />
+      <div class="row d-flex justify-content-center">
+        {% if is_owner %}
+        <a href="{% url 'core:playlist-edit' playlist.id %}" class="btn btn-warning mt-5" style="max-width:130px;">Edit</a>
+        {% endif %}
+      </div>
+      {% if episodes %} 
+      {% for episode in episodes %}
+
+      <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
+        <div class="row g-0">
+            <div class="col-md-2 ms-4 mt-2">
+            {% if episode.episode_thumbnail %}
+            <img
+                src="{{ MEDIA_URL }}{{episode.episode_thumbnail}}"
+                class="img mt-2"
+                alt="Episode thumbnail"
+            />
+            {% else %}
+            <img
+                src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
+                class="img mt-3"
+                alt="Episode thumbnail"
+            />
+            {% endif %}
+            </div>
+            <div class="col-md-8">
+            <div class="card-body">
+                <a
+                href="{% url 'core:episode' episode.podcast.slug episode.slug %}"
+                class="link-episode"
+                ><h5 class="card-title mb-3">{{episode.title}}</h5></a
+                >
+                <div class="row">
+                <div class="col-sm-12">
+                    <p class="text-warning col-sm-6 me-0">
+                    {{ episode.length|seconds_to_minutes }}
+                    </p>
+
+                    {% if is_owner %}
+                    <a href="{% url 'core:playlist-episode-remove' playlist.id episode.id%}" class="text-danger py-1 rounded-pill">Delete</a>
+                    {% else %}
+                    <small class="text-light col-sm-6 me-0"
+                    >{{episode.upload_date}}</small
+                    >
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+        <hr class="text-light" />
+        {% endfor %} 
+        {% else %}
+        <p class="text-light text-center mt-5">No episodes added yet</p>
+        {% endif %}
+    </div>
+  </div> 
+</div>
+
+
+{% endblock %}

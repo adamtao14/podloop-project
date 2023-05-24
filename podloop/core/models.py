@@ -67,7 +67,7 @@ class Playlist(models.Model):
     is_private = models.BooleanField(default=False,blank=False)
     owner = models.ForeignKey(User,on_delete=models.CASCADE)
     description = models.CharField(max_length=200,blank=True)
-    episodes = models.ManyToManyField(Episode)
+    episodes = models.ManyToManyField(Episode,symmetrical=False)
     date = models.DateTimeField(default=now)
     
     class Meta:

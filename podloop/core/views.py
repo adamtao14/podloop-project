@@ -8,8 +8,8 @@ from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
 from accounts.models import EmailVerification
 from accounts.utils import Util
-from accounts.forms import ProfileForm,PodcastForm,EpisodeForm,EpisodeEditForm
-from .models import Category,Podcast,Episode
+from .forms import ProfileForm,PodcastForm,EpisodeForm,EpisodeEditForm,PlaylistForm
+from .models import Category,Podcast,Episode,Playlist
 from .validators import validate_audio_file
 from urllib.parse import urlencode
 import uuid
@@ -79,9 +79,9 @@ def PodcastView(request,slug):
     sort_by = request.GET.get("sort_by")
 
     if sort_by == "old_to_new":
-        episodes = podcast.episodes.all().order_by('upload_date')
+        episodes = podcast.episodes.filter(is_private=False).order_by('upload_date')
     else:
-        episodes = podcast.episodes.all().order_by('-upload_date')
+        episodes = podcast.episodes.filter(is_private=False).order_by('-upload_date')
         sort_by = "new_to_old"
             
     is_owner = False
@@ -132,31 +132,38 @@ def EpisodeView(request,podcast_slug,episode_slug):
     podcast = get_object_or_404(Podcast, slug=podcast_slug)
     episode = get_object_or_404(Episode, slug=episode_slug, podcast=podcast)
     owner = User.objects.get(id=podcast.owner_id)
+    playlists = None
     show_episode = True
-    if episode.is_private:
-        if request.user.is_authenticated:
-            current_user = User.objects.get(id=request.user.id)
-            if current_user.id == podcast.owner.id:
+    
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        playlists = Playlist.objects.filter(owner=current_user)
+        
+        if episode.is_private:
+            if podcast.owner.id == current_user.id:
                 show_episode = True
             else:
                 show_episode = False
         else:
-            show_episode = False
+            show_episode = True
     else:
-        show_episode = True
+        if episode.is_private:
+            show_episode = False
+        else:
+            show_episode = True       
+
     if show_episode:
         context = {
             "podcast":podcast,
             "episode":episode,
             "owner":owner,
+            "playlists":playlists,
         }            
         return render(request, template_name, context=context) 
     else:
         return HttpResponse(status=404)
         
-    
-                 
-    
+                  
 
 
 class ProfileView(View):
@@ -164,9 +171,8 @@ class ProfileView(View):
     form_class = ProfileForm
     def get(self, request):
         if request.user.is_authenticated:
-            
-            
             current_user = User.objects.get(id=request.user.id)
+            playlists = Playlist.objects.filter(owner=current_user)
             form = self.form_class(initial={
                 'email': current_user.email,
                 'name': current_user.name,
@@ -175,12 +181,13 @@ class ProfileView(View):
             })
             
             success_email_change = request.GET.get('success_email_change')
-            return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_email_change':success_email_change})
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_email_change':success_email_change, 'playlists':playlists})
     
     def post(self, request):
         message = []
         current_user = User.objects.get(id=request.user.id)
         form = self.form_class(request.POST,request.FILES)
+        playlists = Playlist.objects.filter(owner=current_user)
         if form.is_valid():
             name = form.cleaned_data.get("name")
             last_name = form.cleaned_data.get("last_name")
@@ -190,7 +197,7 @@ class ProfileView(View):
 
             if name == current_user.name and last_name == current_user.last_name and username == current_user.username and email == current_user.email and not link_profile_picture :
                 message = "No changes made"
-                return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message})
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message, 'playlists':playlists})
             else:
                 if User.objects.filter(username=username).exists() and current_user.username != username:
                     message.append("Username already exists")
@@ -198,7 +205,7 @@ class ProfileView(View):
                     message.append("Email already exists")    
                 
                 if message != []:
-                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message})
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'playlists':playlists})
 
                 current_user.name = name
                 current_user.last_name = last_name
@@ -224,10 +231,10 @@ class ProfileView(View):
                 else:
                     current_user.save()
                     message = "Updated successfully"
-                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message})
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message, 'playlists':playlists})
         else:
             message.append("Invalid data")
-            return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message})
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'playlists':playlists})
 
 
 
@@ -511,3 +518,109 @@ class EditEpisodeView(View):
                 return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episode':episode})
         else:
             return HttpResponse(status=401)
+        
+def PlaylistView(request,playlist_id):
+    template_name="core/playlist.html"
+    playlist = get_object_or_404(Playlist, id=playlist_id)
+    owner = User.objects.get(id=playlist.owner.id)
+    episodes = playlist.episodes.all()
+    show_playlist = True
+    is_owner = False
+    #show the playlist if not private to veryone,if private only to owner
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        if current_user.id == playlist.owner.id:
+            is_owner = True
+        if playlist.is_private and is_owner:
+            show_playlist = True
+        elif playlist.is_private:
+            show_playlist = False
+    else:
+        if playlist.is_private:
+            show_playlist = False
+        else:
+            show_playlist = True
+
+    if show_playlist:
+        return render(request, template_name, context={'playlist':playlist, 'is_owner':is_owner, 'owner':owner, 'episodes':episodes})
+    else:
+        return HttpResponse(status=401)
+
+def DeleteEpisodeFromPlaylist(request,playlist_id,episode_id):
+    current_user = User.objects.get(id=request.user.id)
+    playlist = get_object_or_404(Playlist,id=playlist_id)
+    episode_id = get_object_or_404(Episode,id=episode_id)
+    
+    if playlist.owner.id == current_user.id:
+        playlist.episodes.remove(episode_id)
+        return redirect(reverse('core:playlist', kwargs={'playlist_id': playlist_id}))
+    else:
+        return HttpResponse(status=401)
+
+
+class PlaylistCreateView(View):
+    template_name = "core/create_playlist.html"
+    form_class = PlaylistForm
+    
+    def get(self,request):
+        form = self.form_class()
+        current_user = User.objects.get(id=request.user.id)
+        return render(request, self.template_name, context={'form': form, 'user':current_user})
+        
+    def post(self,request):
+        if request.user.is_authenticated:    
+            message = []
+            form = self.form_class(request.POST)
+            current_user = User.objects.get(id=request.user.id)
+            if form.is_valid():
+                name = form.cleaned_data.get("name")
+                description = form.cleaned_data.get("description")
+                is_private = form.cleaned_data.get("is_private")
+                Playlist.objects.create(name=name,description=description,is_private=is_private,owner=current_user)
+                message = "Playlist created"
+                return render(request, self.template_name, context={'user':current_user, 'form':form, 'success_message':message})
+            else:
+                message.append("Invalid data")
+                return render(request, self.template_name, context={'user':current_user, 'form':form, 'error_message':message})
+        else:
+            return HttpResponse(status=401)
+
+class PlaylistEditView(View):
+    template_name = "core/create_playlist.html"
+    form_class = PlaylistForm
+    
+    def get(self,request,playlist_id):
+        current_user = User.objects.get(id=request.user.id)
+        playlist = get_object_or_404(Playlist,id=playlist_id)
+        if current_user.id == playlist.owner.id:
+            form = self.form_class(initial={
+                'name': playlist.name,
+                'description': playlist.description,
+                'is_private': playlist.is_private,
+            })    
+            
+            return render(request, self.template_name, context={'form': form, 'user':current_user})
+        else:
+            return HttpResponse(status=401)
+        
+    def post(self,request,playlist_id):
+        if request.user.is_authenticated:    
+            message = []
+            form = self.form_class(request.POST)
+            current_user = User.objects.get(id=request.user.id)
+            playlist = get_object_or_404(Playlist,id=playlist_id)
+            if form.is_valid():
+                name = form.cleaned_data.get("name")
+                description = form.cleaned_data.get("description")
+                is_private = form.cleaned_data.get("is_private")
+                playlist.name = name
+                playlist.description = description
+                playlist.is_private = is_private
+                playlist.save()
+                message = "Playlist updated successfully"
+                return render(request, self.template_name, context={'user':current_user, 'form':form, 'success_message':message})
+            else:
+                message.append("Invalid data")
+                return render(request, self.template_name, context={'user':current_user, 'form':form, 'error_message':message})
+        else:
+            return HttpResponse(status=401)       

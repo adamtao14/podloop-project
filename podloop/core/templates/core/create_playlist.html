@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %} 
+{% load static %}
+{% block title %} Create playlist {%endblock %} 
+{% block head %} 
+
+{% endblock %} 
+{% block content %}
+<div class="row mx-auto">
+
+  <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
+    
+    <div class="container-form col-lg-6 mx-auto mt-4">
+      <h2 class="text-light text-center mb-3">Create a playlist</h2>
+      <a href="{% url 'core:profile' %}" class="text-light">&larr; Go back to profile</a>
+      <form method="post" class="card px-4 py-3 mx-auto mt-3" novalidate enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+                {{ field.label_tag }} 
+                {{ field }}
+                {% if field.errors %}
+                    <small class="text-danger mb-2">{{ field.errors|striptags }}</small> 
+                {% endif %}
+        {% endfor %}
+        {% if success_message %}
+        <h6 class="text-success">{{success_message}}</h6>
+        {% else %}
+        <ul>
+            {% for error in error_message %}
+            <li class="text-danger">{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif%}
+        <input type="submit" value="Upload" class="btn btn-warning full-width mb-3">
+      </form>
+    </div>
+  </div> 
+</div>
+
+
+{% endblock %}

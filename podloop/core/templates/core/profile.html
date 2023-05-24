@@ -37,9 +37,13 @@
         Become creator
       </a>
       {% endif %}
+      <a class="btn btn-warning col-sm-6 btn-option me-3 mt-2" href="{% url 'core:playlist-create' %}">
+        Create playlist
+      </a>
     </div>
     <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
       <div class="container-form col-lg-6 mx-auto">
+        <h2 class="text-light text-center mb-3">Update profile</h2>
         <form method="post" class="card px-4 py-3 mx-auto" novalidate enctype="multipart/form-data">
           {% csrf_token %}
           {% for field in form %}
@@ -60,11 +64,29 @@
           </ul>
           {% endif%}
           <input type="submit" value="Update" class="btn btn-warning full-width mb-3">
-      </form>
+        </form>
       </div>
+      {% if playlists %}
+      <div class="col-lg-6">
+        <h2 class="text-light text-center mb-3">Playlists</h2>
+        
+        <ol class="list-group">
+        {% for playlist in playlists %}
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">
+              <a href="{% url 'core:playlist' playlist.id %}" class="text-dark text-decoration-none">{{playlist.name|title}}</a>
+            </div>
+            {{playlist.description}}
+          </div>
+          <span class="badge bg-primary rounded-pill">{{playlist.episodes.all.count}}</span>
+        </li>
+          {% endfor %}
+        </ol>
+      </div>
+      {%endif%}  
     </div>
-
-    
+  
 </div>
 
 
