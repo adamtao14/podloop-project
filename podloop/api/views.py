@@ -210,4 +210,27 @@ def ApiDeleteComment(request,comment_id):
     else:
         return HttpResponse(json.dumps(data),content_type='application/json', status=401)        
         
+def ApiDeletePodcast(request,podcast_slug):
+    podcast = get_object_or_404(Podcast, slug=podcast_slug)
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        if podcast.owner.id == current_user.id:
+            podcast.delete()
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=401)
+    else:
+        return HttpResponse(status=401)
     
+def ApiDeleteEpisode(request,podcast_slug,episode_slug):
+    podcast = get_object_or_404(Podcast, slug=podcast_slug)
+    episode = get_object_or_404(Episode, slug=episode_slug, podcast=podcast)
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        if episode.podcast.owner.id == current_user.id:
+            episode.delete()
+            return HttpResponse(status=200)
+        else:
+            return HttpResponse(status=401)
+    else:
+        return HttpResponse(status=401)

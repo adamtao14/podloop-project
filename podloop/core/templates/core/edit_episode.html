@@ -1,0 +1,93 @@
+{% extends 'core/base.html' %} 
+{% load static %}
+{% load custom_filters %} 
+{% block title %} Edit {{episode.title}}{%endblock %} 
+{% block head %} 
+
+{% endblock %} 
+{% block content %}
+<div class="row mx-auto">
+  <div class="row mt-5">
+    <h1 class="text-light text-center"> Edit <span class="text-warning">{{episode.title}}</span></h1>
+  </div>
+  <a href="{% url 'core:podcast-edit' podcast.slug %}" class="text-light">&larr; Go back to podcast edit</a>
+  <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
+    <div class="col-md-6 d-flex justify-content-center">
+      <a class="btn btn-danger mt-4 ms-1 col-sm-3" data-bs-toggle="modal" data-bs-target="#delete_episode" href="#">Delete</a>
+    </div>
+  </div>
+
+  <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
+    
+    <div class="container-form col-lg-6 mx-auto mt-4">
+        <h2 class="text-light text-center mb-3">Edit podcast</h2>
+      <form method="post" class="card px-4 py-3 mx-auto" novalidate enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+                {{ field.label_tag }} 
+                {{ field }}
+                {% if field.errors %}
+                    <small class="text-danger mb-2">{{ field.errors|striptags }}</small> 
+                {% endif %}
+        {% endfor %}
+        {% if success_message %}
+        <h6 class="text-success">{{success_message}}</h6>
+        {% else %}
+        <ul>
+            {% for error in error_message %}
+            <li class="text-danger">{{error}}</li>
+            {% endfor %}
+        </ul>
+        {% endif%}
+        
+        <input type="submit" value="Update" class="btn btn-warning full-width mb-3">
+      </form>
+    </div>
+  </div> 
+  <!-- Modal -->
+  <div class="modal fade" id="delete_episode" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Episode</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this episode? This action is <strong>irreversible</strong> and will permanently remove the episode and its associated comments and likes.</p>
+          <p><strong>Warning:</strong> Deleting an episode will remove all its data, including, descriptions and related information. This cannot be undone. Please make sure you have a backup or are certain of your decision before proceeding.</p>
+          <form class="form-comment row mt-4" id="confirm_delete_episode">
+            {% csrf_token %}
+            <div class="mb-3 col-md-12">
+
+              <input
+                type="submit"
+                class="btn btn-danger mt-3"
+                value="Delete anyway"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Take me back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'js/podcastEpisodeDelete.js' %}"></script>
+<script>
+  // Saving all the data i will need from the backend in Django to backend in Javascript
+  let dataFrontEnd = {
+    podcast_slug: "{{podcast.slug}}",
+    episode_slug: "{{episode.slug}}",
+  };
+
+  init(dataFrontEnd);
+</script>
+{% endblock %}
+
+

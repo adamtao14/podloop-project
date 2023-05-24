@@ -12,6 +12,13 @@
   </div>
   <a href="{% url 'core:creator' %}" class="text-light">&larr; Go back to creator studio</a>
   <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
+    <div class="col-md-6 d-flex justify-content-center">
+      <a href="{% url 'core:podcast-upload' podcast.slug %}" class="btn btn-success mt-4 ms-1 col-sm-3 ">Upload</a>
+      <a class="btn btn-danger mt-4 ms-1 col-sm-3" data-bs-toggle="modal" data-bs-target="#delete_podcast" href="#">Delete</a>
+    </div>
+  </div>
+
+  <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
     
     <div class="container-form col-lg-6 mx-auto mt-4">
         <h2 class="text-light text-center mb-3">Edit podcast</h2>
@@ -57,7 +64,7 @@
               <a href="{% url 'core:episode' podcast.slug episode.slug %}" class="text-decoration-none text-dark"><h5 class="card-title">{{episode.title}}</h5></a>
               <p class="text-warning">{{episode.length|seconds_to_minutes}}</p>
               <div class="row d-flex justify-content-start">
-                <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-warning mt-4 ms-1 col-sm-3">Edit</a>
+                <a href="{% url 'core:episode-edit' podcast.slug episode.slug %}" class="btn btn-warning mt-4 ms-1 col-sm-3">Manage</a>
               </div>
             </div>
           </div>
@@ -67,7 +74,49 @@
     </div>
     {%endif%}
   </div> 
+  <!-- Modal -->
+  <div class="modal fade" id="delete_podcast" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Podcast</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this podcast? This action is <strong>irreversible</strong> and will permanently remove the podcast and its associated episodes.</p>
+          <p><strong>Warning:</strong> Deleting a podcast will remove all its data, including episodes, descriptions, and related information. This cannot be undone. Please make sure you have a backup or are certain of your decision before proceeding.</p>
+          <form class="form-comment row mt-4" id="confirm_delete_podcast">
+            {% csrf_token %}
+            <div class="mb-3 col-md-12">
+
+              <input
+                type="submit"
+                class="btn btn-danger mt-3"
+                value="Delete anyway"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal">Take me back</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 
 {% endblock %}
+{% block scripts %}
+<script src="{% static 'js/podcastEpisodeDelete.js' %}"></script>
+<script>
+  // Saving all the data i will need from the backend in Django to backend in Javascript
+  let dataFrontEnd = {
+    podcast_slug: "{{podcast.slug}}",
+  };
+
+  init(dataFrontEnd);
+</script>
+{% endblock %}
+
+

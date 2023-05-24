@@ -44,7 +44,6 @@ async function call_api_post(api_url, data) {
     })
     .then(function (data) {})
     .catch(function (error) {
-      console.log("Error:", error.message);
     });
 }
 async function call_api_get(api_url) {
@@ -61,7 +60,6 @@ async function call_api_get(api_url) {
       });
     })
     .catch(function (error) {
-      console.log("Error:", error.message);
     });
 }
 
@@ -167,7 +165,9 @@ async function init(dataFrontEnd) {
   await check_auth();
   //i check if the user is authenticated
   await get_episode_user_info();
-  await get_comments();
+  if (dataBackEnd["is_authenticated"]){
+    await get_comments();
+  }
   //in both cases i display what is necessary
   setPage();
 }
@@ -242,7 +242,7 @@ function setPage() {
 
   if (dataBackEnd["is_authenticated"]) {
     if (dataBackEnd["is_owner"]) {
-      follow_element = `<a class="btn btn-sm btn-warning" href="#">Edit</a>`;
+      follow_element = `<a class="btn btn-sm btn-warning" href="/podcasts/${dataBackEnd["podcast_slug"]}/episode/${dataBackEnd["episode_slug"]}/edit">Edit</a>`;
     } else if (dataBackEnd["is_following"]) {
       follow_element = `<a class="btn btn-sm btn-danger" href="#" onClick=toggle_follow()>Unfollow</a>`;
     } else {
@@ -255,7 +255,7 @@ function setPage() {
       like_element = `<i class="bi bi-hand-thumbs-up-fill text-light" style="cursor:pointer;" onClick=toggle_like_episode()></i>`;
     }
   } else {
-    like_element = `<i class="bi bi-hand-thumbs-up-fill" disabled></i>`;
+    like_element = `<i class="bi bi-hand-thumbs-up-fill text-white" disabled></i>`;
     follow_element = `<a class="btn btn-sm btn-warning" href="/login">Login</a>`;
   }
   followers_count.innerHTML = dataBackEnd["followers"] + " Followers";

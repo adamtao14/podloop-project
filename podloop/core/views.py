@@ -1,21 +1,19 @@
-import io
-import json
-from urllib.parse import urlencode
-import uuid
 from django.http import HttpResponse
 from django.utils.text import slugify
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView,View
 from django.urls import reverse
-from accounts.models import EmailVerification
-from accounts.utils import Util
-from .models import Category,Podcast,Episode
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
-from accounts.forms import ProfileForm,PodcastForm,EpisodeForm
-from .validators import validate_audio_file
 from django.core.exceptions import ValidationError
-from pydub import AudioSegment
+from accounts.models import EmailVerification
+from accounts.utils import Util
+from accounts.forms import ProfileForm,PodcastForm,EpisodeForm,EpisodeEditForm
+from .models import Category,Podcast,Episode
+from .validators import validate_audio_file
+from urllib.parse import urlencode
+import uuid
+
 
 User = get_user_model()
 
@@ -134,13 +132,31 @@ def EpisodeView(request,podcast_slug,episode_slug):
     podcast = get_object_or_404(Podcast, slug=podcast_slug)
     episode = get_object_or_404(Episode, slug=episode_slug, podcast=podcast)
     owner = User.objects.get(id=podcast.owner_id)
-                
-    context = {
-        "podcast":podcast,
-        "episode":episode,
-        "owner":owner,
-    }            
-    return render(request, template_name, context=context)
+    show_episode = True
+    if episode.is_private:
+        if request.user.is_authenticated:
+            current_user = User.objects.get(id=request.user.id)
+            if current_user.id == podcast.owner.id:
+                show_episode = True
+            else:
+                show_episode = False
+        else:
+            show_episode = False
+    else:
+        show_episode = True
+    if show_episode:
+        context = {
+            "podcast":podcast,
+            "episode":episode,
+            "owner":owner,
+        }            
+        return render(request, template_name, context=context) 
+    else:
+        return HttpResponse(status=404)
+        
+    
+                 
+    
 
 
 class ProfileView(View):
@@ -248,11 +264,16 @@ class CreatorView(View):
                 #the first time the user gets to this page after confirming the email, we can set him as a creator
                 current_user.is_creator = True
                 current_user.save()
+            show_delete_success = None
+            
+            if request.GET.get("delete_success"):
+                show_delete_success = request.GET.get("delete_success")
+            
             list_categories = Category.objects.values_list('name', flat=True)
             choices = [(value, value) for value in list_categories]
             form = self.form_class(choices=choices)
             user_podcasts = Podcast.objects.filter(owner=current_user)
-            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcasts':user_podcasts})
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcasts':user_podcasts,'show_delete_success':show_delete_success})
         else:
             return redirect(reverse('core:become-creator'))
         
@@ -307,15 +328,18 @@ class PodcastEditView(View):
             list_categories = Category.objects.values_list('name', flat=True)
             choices = [(value, value) for value in list_categories]
             preselected_choices = [value for value in podcast.categories.all()]
+            show_delete_success = None
+            if request.GET.get("delete_success"):
+                show_delete_success = request.GET.get("delete_success")
             form = self.form_class(choices=choices,initial={
                 'name': podcast.name,
                 'description': podcast.description,
                 'categories': preselected_choices,
             })
-            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes})
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes, 'show_delete_success':show_delete_success})
         else:
-            #return 404
-            return HttpResponse(status=404)
+            return HttpResponse(status=401)
+        
     def post(self,request,slug):
         message = []
         current_user = User.objects.get(id=request.user.id)
@@ -325,50 +349,52 @@ class PodcastEditView(View):
         podcast = get_object_or_404(Podcast,slug=slug)
         episodes = podcast.episodes.all()
         preselected_choices = [value for value in podcast.categories.all().values_list('name',flat=True)]
-        if form.is_valid():
-            
-            
-            name = form.cleaned_data.get("name")
-            description = form.cleaned_data.get("description")
-            categories = form.cleaned_data.get("categories")
-            podcast_thumbnail = form.cleaned_data.get("podcast_thumbnail")
-
-            if name==podcast.name and description == podcast.description and set(preselected_choices) == set(categories) and not podcast_thumbnail:
-                message = "No changes made"
-                return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message, 'podcast':podcast, 'episodes':episodes})
+        if current_user.id == podcast.owner.id:
+            if form.is_valid():
                 
-            if name != podcast.name:
-                if Podcast.objects.filter(name=name).exists():
-                    message.append("A podcast with this name already exists")
-            if message != []:
+                
+                name = form.cleaned_data.get("name")
+                description = form.cleaned_data.get("description")
+                categories = form.cleaned_data.get("categories")
+                podcast_thumbnail = form.cleaned_data.get("podcast_thumbnail")
+
+                if name==podcast.name and description == podcast.description and set(preselected_choices) == set(categories) and not podcast_thumbnail:
+                    message = "No changes made"
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message, 'podcast':podcast, 'episodes':episodes})
+                    
+                if name != podcast.name:
+                    if Podcast.objects.filter(name=name).exists():
+                        message.append("A podcast with this name already exists")
+                if message != []:
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episodes':episodes})
+                
+                podcast.name = name
+                podcast.slug = slugify(name)
+                podcast.description = description
+                if podcast_thumbnail:
+                    podcast.podcast_thumbnail = podcast_thumbnail
+                podcast.save()
+                podcast.categories.clear()
+                for category in categories:
+                    chosen_category = Category.objects.get(name=category)
+                    podcast.categories.add(chosen_category)
+                podcast.save()
+                #empty form
+                preselected_choices = [value for value in podcast.categories.all().values_list('name',flat=True)]
+                form = self.form_class(choices=choices,initial={
+                    'name': podcast.name,
+                    'description': podcast.description,
+                    'categories': preselected_choices,
+                })
+
+                
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes})
+                
+            else:
+                message.append("Invalid data")
                 return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episodes':episodes})
-            
-            podcast.name = name
-            podcast.slug = slugify(name)
-            podcast.description = description
-            if podcast_thumbnail:
-                podcast.podcast_thumbnail = podcast_thumbnail
-            podcast.save()
-            podcast.categories.clear()
-            for category in categories:
-                chosen_category = Category.objects.get(name=category)
-                podcast.categories.add(chosen_category)
-            podcast.save()
-            #empty form
-            preselected_choices = [value for value in podcast.categories.all().values_list('name',flat=True)]
-            form = self.form_class(choices=choices,initial={
-                'name': podcast.name,
-                'description': podcast.description,
-                'categories': preselected_choices,
-            })
-
-            
-            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes})
-            
         else:
-            message.append("Invalid data")
-            return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episodes':episodes})
-
+            return HttpResponse(statu=401)
 
 class PodcastEpisodeUpload(View):
     template_name = 'core/upload_episode.html'
@@ -401,9 +427,13 @@ class PodcastEpisodeUpload(View):
                     validate_audio_file(audio)
                 except ValidationError:
                     message.append("Audio must be of format [MP3, WAV, OGG] and size less than 250MB")
-                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast})
+                
+                if Episode.objects.filter(title=title).exists():
+                    message.append("Title already exists for this podcast")
                   
-                        
+                if message != []:
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast})
+                
                 new_episode = Episode()
                 new_episode.podcast = podcast
                 new_episode.title = title
@@ -423,4 +453,61 @@ class PodcastEpisodeUpload(View):
         else:
             return HttpResponse(status=404)
                 
+class EditEpisodeView(View):
+    template_name = "core/edit_episode.html"
+    form_class = EpisodeEditForm
+    
+    def get(self,request,podcast_slug,episode_slug):
+        podcast = Podcast.objects.get(slug=podcast_slug)
+        episode = Episode.objects.get(podcast=podcast,slug=episode_slug)
+        current_user = User.objects.get(id=request.user.id)
+        if podcast.owner.id == current_user.id:
+            form = self.form_class(initial={
+                'title':episode.title,
+                'description':episode.description,
+                'is_private':episode.is_private
+            })
+            return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episode':episode})
+        else:
+            return HttpResponse(status=401)
+        
+    
+    def post(self,request,podcast_slug,episode_slug):
+        podcast = Podcast.objects.get(slug=podcast_slug)
+        episode = Episode.objects.get(podcast=podcast,slug=episode_slug)
+        current_user = User.objects.get(id=request.user.id)
+        message = []
+        if podcast.owner.id == current_user.id:
+            form = self.form_class(request.POST,request.FILES)
+            if form.is_valid():
+                title = form.cleaned_data.get("title")
+                description = form.cleaned_data.get("description")
+                episode_thumbnail = form.cleaned_data.get("episode_thumbnail")
+                is_private = form.cleaned_data.get("is_private")
                 
+                if title == episode.title and description == episode.description and is_private == episode.is_private and not episode_thumbnail:
+                    message = "No changes were made"
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message, 'podcast':podcast, 'episode':episode})
+                
+                if episode.title != title:
+                    if Episode.objects.filter(title=title).exists():
+                        message.append("Title already exists for this podcast")
+                        
+                if message != []:
+                    return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episode':episode})
+                
+                episode.title = title
+                episode.slug = slugify(title)
+                episode.description = description
+                episode.is_private = is_private
+                if episode_thumbnail:
+                    episode.episode_thumbnail = episode_thumbnail
+                episode.save()
+                form = self.form_class()
+                message = "Episode edited successfully"
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_message':message, 'podcast':podcast, 'episode':episode})
+            else:
+                message.append("Invalid data")
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'error_message':message, 'podcast':podcast, 'episode':episode})
+        else:
+            return HttpResponse(status=401)

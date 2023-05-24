@@ -9,6 +9,12 @@
   <div class="row mt-5">
     <h1 class="text-light text-center"> Creator studio</h1>
   </div>
+  {% if show_delete_success %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{show_delete_success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endif %}
   <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
     
     <div class="container-form col-lg-6 mx-auto mt-4">
@@ -33,7 +39,7 @@
         </ul>
         {% endif%}
         
-        <input type="submit" value="Update" class="btn btn-warning full-width mb-3">
+        <input type="submit" value="Create" class="btn btn-warning full-width mb-3">
       </form>
     </div>
     {% if podcasts %}
@@ -55,7 +61,7 @@
               <a href="{% url 'core:podcast' podcast.slug %}" class="text-decoration-none text-dark"><h5 class="card-title">{{podcast.name}}</h5></a>
               <p class="">{{podcast.episodes.count}} episodes</p>
               <div class="row d-flex justify-content-start">
-                <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-warning mt-4 ms-1 col-sm-3">Edit</a>
+                <a href="{% url 'core:podcast-edit' podcast.slug %}" class="btn btn-warning mt-4 ms-1 col-sm-3">Manage</a>
                 <a href="{% url 'core:podcast-upload' podcast.slug %}" class="btn btn-success mt-4 ms-1 col-sm-3 ">Upload</a>
               </div>
             </div>
