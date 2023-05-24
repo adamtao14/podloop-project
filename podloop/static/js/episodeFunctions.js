@@ -49,6 +49,22 @@ async function call_api_post(api_url, data) {
   }
 }
 async function call_api_get(api_url) {
+  try{
+    const response = await fetch(api_url);
+    if (response.ok) {
+      data = await response.json();
+      Object.entries(data).forEach(([key, value]) => {
+        dataBackEnd[key] = value;
+      });
+      return true;
+    } else {
+      return false;
+    }
+  } catch(error){
+    return false;
+  }
+  
+  /*
   await fetch(api_url)
     .then(function (response) {
       if (response.ok) {
@@ -63,6 +79,7 @@ async function call_api_get(api_url) {
     })
     .catch(function (error) {
     });
+    */
 }
 
 async function check_auth() {
@@ -167,7 +184,38 @@ function reply_comment(id_parent_comment, reply_to) {
 
 async function delete_comment(id) {
   var api_url = `http://127.0.0.1:8000/api/comment/${id}/delete`;
-  await call_api_get(api_url);
+  result = await call_api_get(api_url);
+  if(result){
+    success_alert.innerHTML = `
+    <div
+        class="alert alert-success alert-dismissible fade show"
+        role="alert"
+      >
+        <strong>Comment deleted!</strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+    `;
+  }else{
+    success_alert.innerHTML = `
+    <div
+        class="alert alert-danger alert-dismissible fade show"
+        role="alert"
+      >
+        <strong>Could not delete comment!</strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+    `;
+  }
   await sort_comments(dataBackEnd["sort_by"]);
 }
 
