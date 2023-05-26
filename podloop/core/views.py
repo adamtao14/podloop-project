@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from accounts.models import EmailVerification
 from accounts.utils import Util
 from .forms import ProfileForm,PodcastForm,EpisodeForm,EpisodeEditForm,PlaylistForm
-from .models import Category,Podcast,Episode,Playlist
+from .models import Category,Podcast,Episode,Playlist,EpisodeStream
 from .validators import validate_audio_file
 from urllib.parse import urlencode
 import uuid
@@ -394,8 +394,8 @@ class PodcastEditView(View):
                     'categories': preselected_choices,
                 })
 
-                
-                return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes})
+                message = "Podcast updated successfully!"
+                return render(request, self.template_name, context={'form': form, 'user':current_user, 'podcast':podcast, 'episodes':episodes, 'success_message':message})
                 
             else:
                 message.append("Invalid data")
@@ -624,3 +624,61 @@ class PlaylistEditView(View):
                 return render(request, self.template_name, context={'user':current_user, 'form':form, 'error_message':message})
         else:
             return HttpResponse(status=401)       
+   
+def PlaylistDeleteView(request,playlist_id):
+    current_user = User.objects.get(id=request.user.id)
+    playlist = get_object_or_404(Playlist,id=playlist_id)   
+    if current_user.id == playlist.owner.id:
+        playlist.delete()
+        return redirect(reverse('core:profile'))
+    else:
+        return HttpResponse(status=401)
+     
+def Search(request):
+    template_name = "core/search_results.html"
+    #check if it's a get request
+    if request.method == "GET":
+        where = request.GET.get("where")
+        query = request.GET.get("query")
+         
+        results_for_podcast = False
+        results_before_pagination = []
+        
+        if where and query:
+            order_by_choice = None
+            if request.GET.get("order_by"):
+                order_by_choice = request.GET.get("order_by")
+            
+            if where == "episodes":
+                if not order_by_choice:
+                    order_by_choice = "title"
+                results_before_pagination = Episode.objects.filter(title__icontains=query).order_by(order_by_choice)
+            elif where == "podcasts":
+                if not order_by_choice:
+                    order_by_choice = "name"
+                results_before_pagination = Podcast.objects.filter(name__icontains=query).order_by(order_by_choice)
+                results_for_podcast = True
+            
+            paginator_controller = Paginator(results_before_pagination, 5)
+            if request.GET.get("page"):
+                current_page = int(request.GET.get("page"))
+            else:
+                current_page = 1
+                
+            results = []
+            pagination = {}
+            #if it the current_page is grater than the number of pages, i don't return anything
+            if int(current_page) <= paginator_controller.num_pages:
+                results_page_controller = paginator_controller.page(current_page)
+                
+                results = results_page_controller.object_list
+                pagination["current_page"] = current_page
+                pagination["page_controller"] = results_page_controller
+        
+        return render(request, template_name, context={'results':results, 'number_of_results':results_before_pagination.count(), 'pagination':pagination, 'where':where, 'query':query, 'results_for_podcast':results_for_podcast})
+    else:
+        return HttpResponse(status=401)       
+                
+                
+           
+    

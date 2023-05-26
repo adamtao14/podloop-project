@@ -11,6 +11,7 @@ success_alert = document.getElementById("success_alert");
 comments_count = document.getElementById("comments_count");
 modal = document.getElementById("reply_modal");
 episode_added_to_playlist = document.getElementById("added_episode");
+audio = document.getElementById("audio");
 //listeners
 form_comment.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -22,6 +23,16 @@ form_reply.addEventListener("submit", function (event) {
   var comment_value = document.getElementById("reply").value;
   var parent_id = document.getElementById("parent_comment").value;
   comment(comment_value, true, parent_id);
+});
+audio.addEventListener("play", function(event) {
+  if(!localStorage.getItem(dataBackEnd["stream_element"])){
+    localStorage.setItem(dataBackEnd["stream_element"], 1);
+    stream_episode();
+  }else{
+    //send the stream request api
+    console.log("already streamed");
+    
+  }
 });
 
 async function call_api_post(api_url, data) {
@@ -64,22 +75,6 @@ async function call_api_get(api_url) {
     return false;
   }
   
-  /*
-  await fetch(api_url)
-    .then(function (response) {
-      if (response.ok) {
-        return response.json();
-      }
-      throw new Error("Network response was not ok.");
-    })
-    .then(function (data) {
-      Object.entries(data).forEach(([key, value]) => {
-        dataBackEnd[key] = value;
-      });
-    })
-    .catch(function (error) {
-    });
-    */
 }
 
 async function check_auth() {
@@ -94,16 +89,36 @@ async function get_episode_user_info() {
 
 async function toggle_follow() {
   var api_url = `http://127.0.0.1:8000/api/podcasts/${dataBackEnd["podcast_slug"]}/toggle-follow`;
-  await call_api_get(api_url);
+  csrf_token = document.querySelector(
+    "#post_comment_form input[name='csrfmiddlewaretoken']"
+  ).value;
+  data = {};
+  data["csrfmiddlewaretoken"] = csrf_token;
+  await call_api_post(api_url,data);
   await get_episode_user_info();
   setPage();
 }
 
 async function toggle_like_episode() {
   var api_url = `http://127.0.0.1:8000/api/podcasts/${dataBackEnd["podcast_slug"]}/episode/${dataBackEnd["episode_slug"]}/toggle-like`;
-  await call_api_get(api_url);
+  csrf_token = document.querySelector(
+    "#post_comment_form input[name='csrfmiddlewaretoken']"
+  ).value;
+  data = {};
+  data["csrfmiddlewaretoken"] = csrf_token;
+  await call_api_post(api_url,data);
   await get_episode_user_info();
   setPage();
+}
+
+async function stream_episode(){
+  var api_url = `http://127.0.0.1:8000/api/podcasts/${dataBackEnd["podcast_slug"]}/episode/${dataBackEnd["episode_slug"]}/stream`;
+  csrf_token = document.querySelector(
+    "#post_comment_form input[name='csrfmiddlewaretoken']"
+  ).value;
+  data = {};
+  data["csrfmiddlewaretoken"] = csrf_token;
+  await call_api_post(api_url,data);
 }
 
 async function sort_comments(sort_by) {
@@ -184,7 +199,12 @@ function reply_comment(id_parent_comment, reply_to) {
 
 async function delete_comment(id) {
   var api_url = `http://127.0.0.1:8000/api/comment/${id}/delete`;
-  result = await call_api_get(api_url);
+  csrf_token = document.querySelector(
+    "#post_comment_form input[name='csrfmiddlewaretoken']"
+  ).value;
+  data = {};
+  data["csrfmiddlewaretoken"] = csrf_token;
+  result = await call_api_post(api_url,data);
   if(result){
     success_alert.innerHTML = `
     <div
@@ -221,7 +241,12 @@ async function delete_comment(id) {
 
 async function toggle_like_comment(id) {
   var api_url = `http://127.0.0.1:8000/api/comment/${id}/toggle-like`;
-  await call_api_get(api_url);
+  csrf_token = document.querySelector(
+    "#post_comment_form input[name='csrfmiddlewaretoken']"
+  ).value;
+  data = {};
+  data["csrfmiddlewaretoken"] = csrf_token;
+  await call_api_post(api_url,data);
   await sort_comments(dataBackEnd["sort_by"]);
 }
 
@@ -374,7 +399,12 @@ function setPage() {
 function setCommentSection() {
   comment_section.innerHTML = "";
   sort_by = dataBackEnd["sort_by"];
-  comments_html = `<div class="dropdown bg-dark d-flex justify-content-end">
+  comments_html = ``;
+  
+  //at first the total length is the number of top level comments
+  total_comments_count = dataBackEnd["comments"].length;
+  if (dataBackEnd["comments"].length > 0) {
+    comments_html += `<div class="dropdown bg-dark d-flex justify-content-end">
   <button
     class="btn btn-secondary dropdown-toggle"
     type="button"
@@ -401,9 +431,8 @@ function setCommentSection() {
   </ul>
 </div>
   `;
-  //at first the total length is the number of top level comments
-  total_comments_count = dataBackEnd["comments"].length;
-  if (dataBackEnd["comments"].length > 0) {
+
+
     dataBackEnd["comments"].forEach((entry) => {
       comments_html += comment_template(
         entry.comment.id,

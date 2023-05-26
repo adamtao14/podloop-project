@@ -1,0 +1,151 @@
+{% extends "core/base.html" %} 
+{% load static %}
+{% load custom_filters %}
+{% block title %} Search results {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/search_results.css' %}" />
+<link rel="stylesheet" href="{% static 'css/badge.css' %}" />
+{% endblock %} {% block content %} 
+<div class="search-section mt-5">
+    {% if results %}
+    <h3 class="text-light text-center mb-5"> {{number_of_results}} results for <span class="text-warning">{{query}}</span> in <span class="text-warning">{{where}}</span></h3>
+    <a class="text-light text-center mt-5 mx-auto d-block" href="{% url 'core:home' %}">Back to search</a>
+    <div class="dropdown bg-dark d-flex justify-content-end mt-5">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Sort By
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark">
+          <li>
+            <a
+              class="dropdown-item {% if sort_by == 'name' %} active {% endif %}"
+              href="/search?query={{query}}&where={{where}}&sort_by=name"
+              >Name [A-Z]</a
+            >
+          </li>
+          <li>
+            <a
+              class="dropdown-item {% if sort_by == '-name' %} active {% endif %}"
+              href="/search?query={{query}}&where={{where}}&sort_by=-name"
+              >Name [Z-A]</a
+            >
+          </li>
+          {% if results_for_podcast %}
+          <li><a class="dropdown-item {% if sort_by == '-name' %} active {% endif %}" href="/search?query={{query}}&where={{where}}&sort_by=most-followed">Most followed</a></li>
+          <li><a class="dropdown-item {% if sort_by == '-name' %} active {% endif %}" href="/search?query={{query}}&where={{where}}&sort_by=least-followed">Least followed</a></li>
+          {% else %}
+          <li><a class="dropdown-item {% if sort_by == '-name' %} active {% endif %}" href="/search?query={{query}}&where={{where}}&sort_by=most-streamed">Most streamed</a></li>
+          <li><a class="dropdown-item {% if sort_by == '-name' %} active {% endif %}"  href="/search?query={{query}}&where={{where}}&sort_by=least-streamed">Least streamed</a></li>
+          {% endif %}
+        </ul>
+    </div>
+    {% for result in results %}
+    {% if results_for_podcast %}
+    <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
+        <div class="row g-0">
+            <div class="col-md-4 text-center">
+            {% if result.podcast_thumbnail %}
+            <img
+                src="{{ MEDIA_URL }}{{result.podcast_thumbnail}}"
+                class="img"
+                alt="Podcast thumbnail"
+            />
+            {% else %}
+            <img
+                src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
+                class="img me-auto ms-auto"
+                alt="Podcast thumbnail"
+            />
+            {% endif %}
+            </div>
+            <div class="col-md-8">
+            <div class="card-body">
+                <a href="{% url 'core:podcast' result.slug %}" class="link-podcast"
+                ><h5 class="card-title">{{result.name}}</h5></a
+                >
+                <h6 class="text-body-secondary">@{{result.owner.username}}</h6>
+                <div class="category-list">
+                {% for category in result.categories.all %}
+                <a href="{% url 'core:category-detail' category.slug%}"><span class="badge rounded-pill">{{category.name}}</span></a>
+                {% endfor %}
+                </div>
+                <p class="mt-2">{{result.followers.count}} Followers</p>
+            </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
+        <div class="row g-0">
+            <div class="col-md-4 text-center">
+            {% if result.episode_thumbnail %}
+            <img
+                src="{{ MEDIA_URL }}{{result.episode_thumbnail}}"
+                class="img"
+                alt="Podcast thumbnail"
+            />
+            {% else %}
+            <img
+                src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
+                class="img me-auto ms-auto"
+                alt="Podcast thumbnail"
+            />
+            {% endif %}
+            </div>
+            <div class="col-md-8">
+            <div class="card-body">
+                <a href="{% url 'core:episode' result.podcast.slug result.slug%}" class="link-podcast"
+                ><h5 class="card-title">{{result.title}}</h5></a
+                >
+                <h6 class="text-body-secondary">@{{result.podcast.owner.username}}</h6>
+                <h6 class="text-body-primary">From <span class="text-light">{{result.podcast.name}}</span></h6>
+                <p class="mt-2 text-light">{{result.length|seconds_to_minutes}}</p>
+            </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+        
+  <nav aria-label="..." class="ms-auto me-auto mt-5">
+    <ul class="pagination">
+      {% if pagination.page_controller.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"-1"}}">Previous</a>
+      </li>
+      <li class="page-item"><a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"-1"}}">{{pagination.current_page|add:"-1"}}</a></li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"-1"}}">Previous</a>
+      </li>
+      {% endif %}
+
+      <li class="page-item active" aria-current="page">
+        <span class="page-link">{{pagination.current_page}}</span>
+      </li>
+      {% if pagination.page_controller.has_next %}
+      <li class="page-item"><a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"1"}}">{{pagination.current_page|add:"1"}}</a></li>
+      <li class="page-item">
+        <a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"1"}}">Next</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"1"}}">Next</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+    {% else %}
+    <h1 class="text-light text-center mt-5">No results found.</h1>
+    <a class="text-light text-center mt-5 mx-auto d-block" href="{% url 'core:home' %}">Back to search</a>
+    {% endif %}
+
+
+</div>
+
+{% endblock %}

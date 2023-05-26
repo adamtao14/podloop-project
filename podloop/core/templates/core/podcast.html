@@ -91,6 +91,7 @@
   <div class="episodes-list">
     <div class="d-flex justify-content-between">
       <h2 class="text-light mb-5">{{episodes.count}} Episodes</h2>
+      {% if episodes.count != 0 %}
       <div class="dropdown bg-dark">
         <button
           class="btn btn-secondary dropdown-toggle"
@@ -115,9 +116,9 @@
               >New to old</a
             >
           </li>
-          <li><a class="dropdown-item disabled" href="#">Most streamed</a></li>
         </ul>
       </div>
+      {% endif %}
     </div>
     {% if episodes %} {% for episode in episodes %}
 

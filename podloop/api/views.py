@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from core.models import Podcast,EpisodeLike,Episode,EpisodeComment,EpisodeCommentLike,Playlist
+from core.models import Podcast,EpisodeLike,Episode,EpisodeComment,EpisodeCommentLike,Playlist,EpisodeStream
 from django.utils.html import escape
 User = get_user_model()
 
@@ -250,3 +250,14 @@ def ApiAddEpisodeToPlaylist(request,podcast_slug,episode_slug,playlist_id):
             return HttpResponse(status=401)
     else:
         return HttpResponse(status=401)
+    
+def StreamEpisode(request,podcast_slug,episode_slug):
+    podcast = get_object_or_404(Podcast,slug=podcast_slug)
+    episode = get_object_or_404(Episode,podcast=podcast,slug=episode_slug)
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        EpisodeStream.objects.create(user=current_user,episode=episode)
+        return HttpResponse(status=200)   
+    else:
+        return HttpResponse(status=401)   
+        

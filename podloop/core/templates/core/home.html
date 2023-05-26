@@ -1,10 +1,67 @@
 {% extends "core/base.html" %} 
+{% load static %}
 {% block title %} Home {% endblock %}
 {% block head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock %} {% block content %} 
+<div class="search-section row mt-5">
+    <h1 class="text-center text-light mt-5">Search</h1>
+    <form action="{% url 'core:search' %}" method="GET" class="row g-3 d-flex justify-content-center mt-5">
+        <div class="col-md-6">
+          <input type="text" name="query" class="form-control" id="query" placeholder="Query..." required>
+        </div>
+        <div class="col-md-2">
+          <select id="where" name="where" class="form-select" required>
+            <option value="podcasts" selected>Podcasts</option>
+            <option value="episodes">Episodes</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-warning">Search</button>
+        </div>
+      </form>
+</div>
+<div class="row mt-5">
+    <h1 class="text-warning text-center mt-5">Reccomended for you</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+          <div class="card h-100">
+            <img src="{{ MEDIA_URL }}images/alt_cover_b6vKBTh.jpg" class="card-img-top result-image" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="card-img-top result-image" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">This is a short card.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="card-img-top result-image" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card h-100">
+            <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="card-img-top result-image" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
 
-{% endblock %} {% block content %} {% if user.is_authenticated %}
-<h1 class="text-light">Ciao {{user.username}}</h1>
-<a href="{% url 'accounts:logout' %}">Logout</a>
-{% else %}
-<h1 class="text-light">Non sei loggato</h1>
-{% endif %} {% endblock %}
+
+{% endblock %}

@@ -60,7 +60,7 @@
     </div>
   </div>
   {% if user.is_authenticated %}
-  <audio class="mt-5" controls preload="metadata">
+  <audio class="mt-5" controls preload="metadata" id="audio">
     <source src="{{ MEDIA_URL }}{{episode.audio}}" type="audio/ogg" />
     Your browser does not support the audio tag.
   </audio>
@@ -181,11 +181,17 @@
 <script src="{% static 'js/episodeFunctions.js' %}"></script>
 <script>
   // Saving all the data i will need from the backend in Django to backend in Javascript
-  let dataFrontEnd = {
-    episode_slug: "{{episode.slug}}",
-    podcast_slug: "{{podcast.slug}}",
-  };
-
-  init(dataFrontEnd);
+  //on page load play audio  
+  window.addEventListener('DOMContentLoaded', (event) => {
+    let dataFrontEnd = {
+      episode_slug: "{{episode.slug}}",
+      podcast_slug: "{{podcast.slug}}",
+      stream_element: `streamed_{{podcast.slug}}_{{episode.slug}}`,
+    };
+    if(localStorage.getItem(dataFrontEnd.stream_element)){
+      localStorage.removeItem(dataFrontEnd.stream_element);
+    }
+    init(dataFrontEnd);
+  });
 </script>
 {% endblock %}

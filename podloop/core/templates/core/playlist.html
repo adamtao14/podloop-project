@@ -17,6 +17,7 @@
       <div class="row d-flex justify-content-center">
         {% if is_owner %}
         <a href="{% url 'core:playlist-edit' playlist.id %}" class="btn btn-warning mt-5" style="max-width:130px;">Edit</a>
+        <a href="{% url 'core:playlist-delete' playlist.id %}" class="btn btn-danger mt-5 ms-1" style="max-width:130px;">Delete</a>
         {% endif %}
       </div>
       {% if episodes %} 
