@@ -1,5 +1,7 @@
+from datetime import timedelta
 from django.http import HttpResponse
 from django.utils.text import slugify
+from django.utils.timezone import now
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView,View
 from django.urls import reverse
@@ -679,6 +681,23 @@ def Search(request):
     else:
         return HttpResponse(status=401)       
                 
+                
+def Feed(request):
+    template_name = "core/feed.html"
+    current_user = User.objects.get(id=request.user.id)
+    one_day_ago = now() - timedelta(days=1)
+    episodes_list = []
+    
+    episodes = Episode.objects.filter(podcast__followers=current_user, upload_date__gte=one_day_ago).order_by('-upload_date')
+    for episode in episodes:
+        streams = 0
+        if EpisodeStream.objects.filter(episode=episode).exists():
+            streams = EpisodeStream.objects.filter(episode=episode).all().count()
+        episodes_list.append({'episode':episode,'streams':streams})
+    followings = current_user.followed_podcasts.all().order_by("name")
+    return render(request, template_name, context={'user':current_user, 'results':episodes_list, 'followings':followings}) 
+   
+    
                 
            
     

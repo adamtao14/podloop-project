@@ -1,0 +1,71 @@
+{% extends "core/base.html" %} 
+{% load static %}
+{% load custom_filters %}
+{% block title %}{{user.username}}'s Feed {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock %} {% block content %} 
+
+<div class="row mt-5">
+    <h1 class="text-light text-center">Latest uploads</h1>
+</div>
+<div class="row mt-5">
+      <button class="btn btn-primary mx-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" style="max-width:160px;">
+        Your follows
+      </button>
+      
+      <div class="offcanvas offcanvas-start bg-dark" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title text-warning" id="offcanvasExampleLabel">Followed podcasts</h5>
+          <button type="button" class="btn-close bg-light" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+        {% if followings %}
+            <ul class="list-unstyled">
+            {% for follow in followings %}
+                <li class="media d-flex justify-content-start mb-3">
+                    {% if follow.podcast_thumbnail %}  
+                    <img src="{{ MEDIA_URL }}{{follow.podcast_thumbnail}}" class="mr-3" alt="Small Image" style="width: 50px; height: 50px; border-radius:50%;">
+                    {% else %}
+                    <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="mr-3" alt="Small Image" style="width: 50px; height: 50px; border-radius:50%;">
+                    {% endif %}
+                    <div class="media-body ms-3 align-middle mt-2">
+                        <a href="{% url 'core:podcast' follow.slug%}" class="mt-0 text-light text-decoration-none">{{follow.name}}</a>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't followed any podcasts yet.</p>
+        {% endif %}
+        </div>
+      </div>
+</div>
+{% if results %}
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-5">
+
+{% for result in results %}
+<div class="col">
+    <div class="card h-100">
+      {% if result.episode.episode_thumbnail %}  
+      <img src="{{ MEDIA_URL }}{{result.episode.episode_thumbnail}}" class="card-img-top result-image" alt="...">
+      {% else %}
+      <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="card-img-top result-image" alt="...">
+      {% endif %}
+      <div class="card-body">
+        <a href="{% url 'core:episode' result.episode.podcast.slug result.episode.slug %}" class="text-dark text-decoration-none"><h5 class="card-title">{{result.episode.title}}</h5></a>
+        <a class="card-text text-warning text-decoration-none" href="{% url 'core:podcast' result.episode.podcast.slug %}">@{{result.episode.podcast.name}}</a>
+        <div class="row d-flex justify-content-between mt-3">
+            <p class="card-text text-dark col-6">{{result.streams}} streams</p>
+            <p class="card-text text-warning col-6">{{result.episode.length|seconds_to_minutes}}</p>
+        </div>
+        <p class="text-secondary">Uploaded {{result.episode.upload_date|timesince_without_minutes}} ago</p>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+</div>
+{% else %}
+<h2 class="text-light text-center mt-5">There are no new episodes :(</h2>
+{% endif %}
+{% endblock %}

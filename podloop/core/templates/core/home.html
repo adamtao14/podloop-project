@@ -21,6 +21,7 @@
         </div>
       </form>
 </div>
+{% if user.is_authenticated %}
 <div class="row mt-5">
     <h1 class="text-warning text-center mt-5">Reccomended for you</h1>
     <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -62,6 +63,7 @@
         </div>
       </div>
 </div>
+{% endif %}
 
 
 {% endblock %}
