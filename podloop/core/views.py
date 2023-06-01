@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from accounts.models import EmailVerification
 from accounts.utils import Util
 from .forms import ProfileForm,PodcastForm,EpisodeForm,EpisodeEditForm,PlaylistForm
@@ -647,19 +648,33 @@ def Search(request):
         results_before_pagination = []
         
         if where and query:
-            order_by_choice = None
-            if request.GET.get("order_by"):
-                order_by_choice = request.GET.get("order_by")
+
+            #controllo se l'utente ha scelto un ordinamento
+            sort_by = "name"
+            if request.GET.get("sort_by"):
+                sort_by = request.GET.get("sort_by")
             
-            if where == "episodes":
-                if not order_by_choice:
-                    order_by_choice = "title"
-                results_before_pagination = Episode.objects.filter(title__icontains=query).order_by(order_by_choice)
-            elif where == "podcasts":
-                if not order_by_choice:
-                    order_by_choice = "name"
-                results_before_pagination = Podcast.objects.filter(name__icontains=query).order_by(order_by_choice)
+            if where == "podcasts":
+                if sort_by == "name":
+                    results_before_pagination = Podcast.objects.filter(name__icontains=query).order_by("name")
+                elif sort_by == "-name":
+                    results_before_pagination = Podcast.objects.filter(name__icontains=query).order_by("-name")
+                elif sort_by == "most-followed":
+                    results_before_pagination = Podcast.objects.filter(name__icontains=query).annotate(follow_count=Count('followers')).order_by("-follow_count")
+                elif sort_by == "least-followed":   
+                    results_before_pagination = Podcast.objects.filter(name__icontains=query).annotate(follow_count=Count('followers')).order_by("follow_count")
                 results_for_podcast = True
+                
+            elif where == "episodes":
+                if sort_by == "name":
+                    results_before_pagination = Episode.objects.filter(title__icontains=query).order_by("title")
+                elif sort_by == "-name":
+                    results_before_pagination = Episode.objects.filter(title__icontains=query).order_by("-title")
+                elif sort_by == "most-streamed":
+                    results_before_pagination = Episode.objects.filter(title__icontains=query).annotate(streams=Count('episodestream')).order_by("-streams")
+                elif sort_by == "least-streamed":   
+                    results_before_pagination = Episode.objects.filter(title__icontains=query).annotate(streams=Count('episodestream')).order_by("streams")
+                            
             
             paginator_controller = Paginator(results_before_pagination, 5)
             if request.GET.get("page"):
@@ -676,8 +691,8 @@ def Search(request):
                 results = results_page_controller.object_list
                 pagination["current_page"] = current_page
                 pagination["page_controller"] = results_page_controller
-        
-        return render(request, template_name, context={'results':results, 'number_of_results':results_before_pagination.count(), 'pagination':pagination, 'where':where, 'query':query, 'results_for_podcast':results_for_podcast})
+                
+        return render(request, template_name, context={'results':results, 'number_of_results':results_before_pagination.count(), 'pagination':pagination, 'where':where, 'query':query, 'results_for_podcast':results_for_podcast, 'sort_by':sort_by})
     else:
         return HttpResponse(status=401)       
                 
