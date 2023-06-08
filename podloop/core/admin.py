@@ -11,5 +11,5 @@ admin.site.register(EpisodeLike)
 admin.site.register(EpisodeStream) 
 admin.site.register(EpisodeComment) 
 admin.site.register(EpisodeCommentLike) 
-admin.site.register(PodcastFollow) 
+
 

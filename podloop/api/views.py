@@ -15,32 +15,6 @@ def ApiIsAuth(request):
     json_data = json.dumps(data)
     return  HttpResponse(json_data, content_type='application/json')
 
-def ApiFollow(request,podcast_slug):
-    podcast = get_object_or_404(Podcast, slug=podcast_slug)
-    current_user = User.objects.get(id=request.user.id)
-    data = {}
-    if request.user.is_authenticated:
-        if not current_user.followed_podcasts.filter(name=podcast.name).exists():
-            current_user.followed_podcasts.add(podcast)
-            data["is_following"] = True
-            return HttpResponse(json.dumps(data), content_type='application/json', status=200)
-    else:
-        return HttpResponse(json.dumps(data), content_type='application/json',status=401)
-    
-
-def ApiUnfollow(request,podcast_slug):
-    podcast = get_object_or_404(Podcast, slug=podcast_slug)
-    data = {}
-    if request.user.is_authenticated:
-        current_user = User.objects.get(id=request.user.id)
-        if current_user.followed_podcasts.filter(name=podcast.name).exists():
-            current_user.followed_podcasts.remove(podcast)
-            data["is_following"] = False
-            return HttpResponse(json.dumps(data), content_type='application/json', status=200)
-    else:
-        return HttpResponse(json.dumps(data), content_type='application/json',status=401)       
-   
-
 def ApiToggleFollow(request,podcast_slug):
     podcast = get_object_or_404(Podcast, slug=podcast_slug)
     data = {}

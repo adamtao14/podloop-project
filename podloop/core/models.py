@@ -41,19 +41,7 @@ class Podcast(models.Model):
     
     def __str__(self):
         return self.name
-    
-class PodcastFollow(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name="followings")
-    podcast = models.ForeignKey(Podcast,on_delete=models.CASCADE)
-    date = models.DateTimeField(default=now)
-    
-    class Meta:
-        constraints = [
-                models.UniqueConstraint(
-                    fields=['user', 'podcast'], name='id_follow'
-                )
-            ]
-        verbose_name_plural = "PodcastFollows"
+
     
 class Episode(models.Model):
     title = models.CharField(max_length=200,blank=False)

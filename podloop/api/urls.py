@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.urls import path
-from .views import ApiFollow,ApiUnfollow,ApiIsAuth,ApiGetEpisodeUserInfo,ApiPostComment,ApiGetComments,ApiToggleLikeComment,ApiDeleteComment,ApiToggleLikeEpisode,ApiToggleFollow,ApiDeletePodcast,ApiDeleteEpisode,ApiAddEpisodeToPlaylist,StreamEpisode
+from .views import ApiIsAuth,ApiGetEpisodeUserInfo,ApiPostComment,ApiGetComments,ApiToggleLikeComment,ApiDeleteComment,ApiToggleLikeEpisode,ApiToggleFollow,ApiDeletePodcast,ApiDeleteEpisode,ApiAddEpisodeToPlaylist,StreamEpisode
 from django.conf.urls.static import static
 app_name = "api"
 
@@ -8,8 +8,6 @@ urlpatterns = [
     path('api/is-authenticated', ApiIsAuth),
     path('api/comment/<int:comment_id>/toggle-like', ApiToggleLikeComment),
     path('api/comment/<int:comment_id>/delete', ApiDeleteComment),
-    path('api/podcasts/<slug:podcast_slug>/follow', ApiFollow),
-    path('api/podcasts/<slug:podcast_slug>/unfollow', ApiUnfollow),
     path('api/podcasts/<slug:podcast_slug>/delete', ApiDeletePodcast),
     path('api/podcasts/<slug:podcast_slug>/toggle-follow', ApiToggleFollow),
     path('api/podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>', ApiGetEpisodeUserInfo),
