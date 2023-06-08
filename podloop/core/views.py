@@ -8,11 +8,11 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
-from django.db.models import Count
+from django.db.models import Count,Q
 from accounts.models import EmailVerification
 from accounts.utils import Util
 from .forms import ProfileForm,PodcastForm,EpisodeForm,EpisodeEditForm,PlaylistForm
-from .models import Category,Podcast,Episode,Playlist,EpisodeStream
+from .models import Category,Podcast,Episode,Playlist,EpisodeStream,EpisodeLike,EpisodeComment
 from .validators import validate_audio_file
 from urllib.parse import urlencode
 import uuid
@@ -137,6 +137,7 @@ def EpisodeView(request,podcast_slug,episode_slug):
     owner = User.objects.get(id=podcast.owner_id)
     playlists = None
     show_episode = True
+    streams = EpisodeStream.objects.filter(episode=episode).all().count()
     
     if request.user.is_authenticated:
         current_user = User.objects.get(id=request.user.id)
@@ -161,6 +162,7 @@ def EpisodeView(request,podcast_slug,episode_slug):
             "episode":episode,
             "owner":owner,
             "playlists":playlists,
+            "streams":streams
         }            
         return render(request, template_name, context=context) 
     else:
@@ -714,5 +716,50 @@ def Feed(request):
    
     
                 
-           
+def PodcastAnalytics(request,slug):
+    template_name = "core/analytics.html"
+    current_user = User.objects.get(id=request.user.id)
+    podcast = get_object_or_404(Podcast, slug=slug)
+    if current_user.id == podcast.owner.id:
+        #this is the data i will need to show for each podcast
+        average_likes_per_episode = 0
+        average_streams_per_episode = 0
+        average_comments_per_episode = 0
+        total_likes = 0
+        total_streams = 0
+        total_lengths = 0
+        total_comments = 0
+        
+        episodes_list = []
+        today = now()
+        last_week_start = today - timedelta(days=today.weekday() + 6)
+        last_week_end = today
+        print(last_week_start,last_week_end)
+
+        number_of_episodes = podcast.episodes.all().count()
+        if number_of_episodes > 0:
+            
+            for episode in podcast.episodes.all():
+                likes_in_the_last_week = EpisodeLike.objects.filter(Q(episode=episode) & Q(date__gte=last_week_start) & Q(date__lte=last_week_end)).all().count()
+                streams_in_the_last_week = EpisodeStream.objects.filter(Q(episode=episode) & Q(date__gte=last_week_start) & Q(date__lte=last_week_end)).all().count()
+                episode_likes = EpisodeLike.objects.filter(episode=episode).all().count()
+                episode_comments = EpisodeComment.objects.filter(episode=episode).all().count() 
+                episode_streams = EpisodeStream.objects.filter(episode=episode).all().count() 
+                total_lengths += int(episode.length)
+                total_streams += episode_streams
+                total_likes += episode_likes
+                total_comments += episode_comments
+                episodes_list.append({'episode':episode, 'likes_in_the_last_week':likes_in_the_last_week, 'streams_in_the_last_week':streams_in_the_last_week, 'total_likes':episode_likes, 'episode_comments':episode_comments, 'episode_streams':episode_streams})
+
+                print("data for podcast\n")
+                print(total_likes,total_comments,total_streams)
+                average_comments_per_episode = int(total_comments / number_of_episodes)
+                average_likes_per_episode = int(total_likes / number_of_episodes)
+                average_streams_per_episode = int(total_streams / number_of_episodes)
+                
+        
+        return render(request, template_name, context={'user':current_user, 'episodes':episodes_list, 'podcast':podcast, 'average_comments_per_episode':average_comments_per_episode, 'average_likes_per_episode':average_likes_per_episode, 'average_streams_per_episode':average_streams_per_episode, 'total_lengths':total_lengths})
+    else:
+        return HttpResponse(status=401)
+        
     

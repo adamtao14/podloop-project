@@ -25,7 +25,6 @@ def timesince_without_minutes(value):
     try:
         if isinstance(value, str):
             value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%fZ')
-
-        return django_timesince(value, now()).split(', ')[0].replace(("minute"), "").strip()
+        return django_timesince(value, now()).split(', ')[0]
     except (ValueError, TypeError):
         return ''

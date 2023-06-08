@@ -115,12 +115,12 @@
     <ul class="pagination">
       {% if pagination.page_controller.has_previous %}
       <li class="page-item">
-        <a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"-1"}}&sort_by={{sort_by}}">Previous</a>
+        <a class="page-link" href="?query={{query}}&where={{where}}&sort_by={{sort_by}}&page={{pagination.current_page|add:"-1"}}">Previous</a>
       </li>
-      <li class="page-item"><a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"-1"}}&sort_by={{sort_by}}">{{pagination.current_page|add:"-1"}}</a></li>
+      <li class="page-item"><a class="page-link" href="?query={{query}}&where={{where}}&sort_by={{sort_by}}&page={{pagination.current_page|add:"-1"}}">{{pagination.current_page|add:"-1"}}</a></li>
       {% else %}
       <li class="page-item disabled">
-        <a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"-1"}}&sort_by={{sort_by}}">Previous</a>
+        <a class="page-link" href="?query={{query}}&where={{where}}&sort_by={{sort_by}}&page={{pagination.current_page|add:"-1"}}">Previous</a>
       </li>
       {% endif %}
 
@@ -128,13 +128,13 @@
         <span class="page-link">{{pagination.current_page}}</span>
       </li>
       {% if pagination.page_controller.has_next %}
-      <li class="page-item"><a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"1"}}&sort_by={{sort_by}}">{{pagination.current_page|add:"1"}}</a></li>
+      <li class="page-item"><a class="page-link" href="?query={{query}}&where={{where}}&sort_by={{sort_by}}&page={{pagination.current_page|add:"1"}}">{{pagination.current_page|add:"1"}}</a></li>
       <li class="page-item">
-        <a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"1"}}&sort_by={{sort_by}}">Next</a>
+        <a class="page-link" href="?query={{query}}&where={{where}}&sort_by={{sort_by}}&page={{pagination.current_page|add:"1"}}">Next</a>
       </li>
       {% else %}
       <li class="page-item disabled">
-        <a class="page-link" href="?query={{query}}&where={{where}}&page={{pagination.current_page|add:"1"}}&sort_by={{sort_by}}">Next</a>
+        <a class="page-link" href="?query={{query}}&where={{where}}&sort_by={{sort_by}}&page={{pagination.current_page|add:"1"}}">Next</a>
       </li>
       {% endif %}
     </ul>

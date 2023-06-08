@@ -34,6 +34,7 @@
   <div class="col-lg-8 mt-4">
     <h1 class="text-light">{{episode.title}}</h1>
     <h5 class="text-warning">@{{owner.username}}</h5>
+    
     <!--
         
         <div class="category-list mt-3">
@@ -44,7 +45,7 @@
             {% endfor %}
         </div>
     -->
-    <div class="row">
+    <div class="row mb-3">
       <div class="follow-section mt-5 col-8 row" style="">
         <div class="col-sm-3" id="follow_section"></div>
         <div class="col-sm-8">
@@ -58,6 +59,7 @@
         </div>
       </div>
     </div>
+    <p class="text-light"><span class="text-warning">{{streams}}</span> {% if streams == 1 %} stream {% else %} streams {% endif %}</p>
   </div>
   {% if user.is_authenticated %}
   <audio class="mt-5" controls preload="metadata" id="audio">

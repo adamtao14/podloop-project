@@ -14,6 +14,7 @@
   <div class="row mt-5 d-flex justify-content-center pe-0 ps-0 mx-auto mb-5">
     <div class="col-md-6 d-flex justify-content-center">
       <a href="{% url 'core:podcast-upload' podcast.slug %}" class="btn btn-success mt-4 ms-1 col-sm-3 ">Upload</a>
+      <a href="{% url 'core:podcast-analytics' podcast.slug %}" class="btn btn-warning mt-4 ms-1 col-sm-3 ">Analytics</a>
       <a class="btn btn-danger mt-4 ms-1 col-sm-3" data-bs-toggle="modal" data-bs-target="#delete_podcast" href="#">Delete</a>
     </div>
   </div>

@@ -41,6 +41,20 @@ class Podcast(models.Model):
     
     def __str__(self):
         return self.name
+    
+class PodcastFollow(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE, related_name="followings")
+    podcast = models.ForeignKey(Podcast,on_delete=models.CASCADE)
+    date = models.DateTimeField(default=now)
+    
+    class Meta:
+        constraints = [
+                models.UniqueConstraint(
+                    fields=['user', 'podcast'], name='id_follow'
+                )
+            ]
+        verbose_name_plural = "PodcastFollows"
+    
 class Episode(models.Model):
     title = models.CharField(max_length=200,blank=False)
     description = models.CharField(max_length=500,blank=False)
@@ -75,6 +89,7 @@ class Playlist(models.Model):
     
     def __str__(self):
         return self.name
+    
 class EpisodeLike(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     episode = models.ForeignKey(Episode,on_delete=models.CASCADE)
@@ -103,7 +118,7 @@ class EpisodeStream(models.Model):
 
 
 class EpisodeComment(models.Model):
-    episode = models.ForeignKey(Episode,on_delete=models.CASCADE)
+    episode = models.ForeignKey(Episode,on_delete=models.CASCADE,related_name="comments")
     text = models.CharField(max_length=500, blank=False)
     owner = models.ForeignKey(User,on_delete=models.CASCADE)
     parent_comment = models.ForeignKey('self',on_delete=models.CASCADE,null=True,default=None)
@@ -126,32 +141,3 @@ class EpisodeCommentLike(models.Model):
         
         verbose_name_plural = "EpisodeCommentLikes"
     
-    
-class NotificationType(models.Model):
-    name = models.CharField(max_length=50,blank=False, unique=True)
-    
-    class Meta:
-        verbose_name_plural = "NotificationTypes"
-    
-    def __str__(self):
-        return self.name
-      
-class NotificationModel(models.Model):
-    user_to_notify = models.ForeignKey(User,on_delete=models.CASCADE, related_name="my_notifications")
-    type = models.ForeignKey(NotificationType,on_delete=models.CASCADE)    
-    date = models.DateTimeField(default=now)
-    read = models.BooleanField(default=False,blank=False)
-    
-    class Meta:
-        abstract=True
-    
-    class Meta:
-        verbose_name_plural = "Notifications"
-
-# usata sia in caso un utente mette mi piace ad un commento oppure risponde ad esso
-class ActionOnCommentNotification(NotificationModel):
-    comment = models.ForeignKey(EpisodeComment,on_delete=models.CASCADE)
-    user_who_notifies = models.ForeignKey(User,on_delete=models.CASCADE)
-
-class NewEpisodeNotification(NotificationModel):
-    episode = models.ForeignKey(Episode,on_delete=models.CASCADE)

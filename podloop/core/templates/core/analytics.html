@@ -1,0 +1,86 @@
+{% extends "core/base.html" %} 
+{% load static %}
+{% load custom_filters %}
+{% block title %}{{podcast.name}}'s analytics {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock %} 
+{% block content %} 
+<div class="row mt-5">
+    <h1 class="text-light text-center mt-5"><span class="text-warning">{{podcast.name}}</span> analytics</h1>
+<div>
+<div class="row row-cols-1 row-cols-md-4 g-4 mt-5">
+    <div class="col">
+        <div class="card text-white bg-light mb-3 mx-auto" style="max-width: 18rem;">
+            <div class="card-header text-dark">Avg comments per episode</div>
+            <div class="card-body">
+                <h5 class="card-title text-center text-dark" style="font-size:34px">{{average_comments_per_episode}}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-light mb-3 mx-auto" style="max-width: 18rem;">
+            <div class="card-header text-dark">Avg streams per episode</div>
+            <div class="card-body">
+                <h5 class="card-title text-center text-dark" style="font-size:34px">{{average_streams_per_episode}}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-light mb-3 mx-auto" style="max-width: 18rem;">
+            <div class="card-header text-dark">Avg likes per episode</div>
+            <div class="card-body">
+                <h5 class="card-title text-center text-dark" style="font-size:34px">{{average_likes_per_episode}}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-light mb-3 mx-auto" style="max-width: 18rem;">
+            <div class="card-header text-dark">Total content time</div>
+            <div class="card-body">
+                <h5 class="card-title text-center text-dark" style="font-size:34px">{{total_lengths|seconds_to_minutes}}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-5">
+    {% if episodes %}
+    <table class="table text-light">
+        <thead>
+          <tr class="table-warning">
+            <th scope="col">Id</th>
+            <th scope="col">Title</th>
+            <th scope="col">Total streams</th>
+            <th scope="col">Last week streams*</th>
+            <th scope="col">Last week likes*</th>
+            <th scope="col">Total comments</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for episode in episodes %}
+            <tr class="table-light">
+                <td>{{episode.episode.id}}</td>
+                <td><a class="text-success text-decoration-none" href="{% url 'core:episode' podcast.slug episode.episode.slug %}">{{episode.episode.title}}</a></td>
+                <td>{{episode.episode_streams}}</td>
+                {% if episode.streams_in_the_last_week > 0 %}
+                <td class=" text-success">+{{episode.streams_in_the_last_week}}</td>
+                {% else %}
+                <td>{{episode.streams_in_the_last_week}}</td>
+                {% endif %}
+                {% if episode.likes_in_the_last_week > 0 %}
+                <td class="text-success">+{{episode.likes_in_the_last_week}}</td>
+                {% else %}
+                <td>{{episode.likes_in_the_last_week}}</td>
+                {% endif %}
+                <td>{{episode.episode_comments}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <i><small class="text-light">* Data retrieved in the last 7 days,current day is included</small></i>
+    {% else %}
+        <h4 class="text-warning text-center">Upload episodes to view their analytics</h4>
+    {% endif %}
+
+</div>
+{% endblock %}
