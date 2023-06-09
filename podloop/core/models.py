@@ -18,20 +18,12 @@ class Category(models.Model):
   
     def __str__(self):
         return self.name
-class Tag(models.Model):
-    name = models.CharField(max_length=50,unique=True,blank=False)
-    
-    class Meta:
-        verbose_name_plural = "Tags"
-    
-    def __str__(self):
-        return self.name
 
 class Podcast(models.Model):
     name = models.CharField(max_length=300,blank=False, unique=True)
     owner = models.ForeignKey(User,on_delete=models.CASCADE,blank=False)
     slug = models.CharField(max_length=500,unique=True,null=True)
-    followers = models.ManyToManyField(User,related_name="followed_podcasts",symmetrical=False)
+    #followers = models.ManyToManyField(User,related_name="followed_podcasts",symmetrical=False)
     description = models.CharField(max_length=500,blank=False)
     categories = models.ManyToManyField(Category,related_name="podcasts",symmetrical=False,blank=False)
     podcast_thumbnail = models.FileField(upload_to='images/',blank=True, validators=[validate_image_file])
@@ -42,12 +34,23 @@ class Podcast(models.Model):
     def __str__(self):
         return self.name
 
+class PodcastFollow(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    podcast = models.ForeignKey(Podcast,on_delete=models.CASCADE)
+    date = models.DateTimeField(default=now)
+    
+    class Meta:
+        constraints = [
+                models.UniqueConstraint(
+                    fields=['user', 'podcast'], name='id_follow'
+                )
+            ]
+        verbose_name_plural = "PodcastFollows"
     
 class Episode(models.Model):
     title = models.CharField(max_length=200,blank=False)
     description = models.CharField(max_length=500,blank=False)
     upload_date = models.DateTimeField(default=now)
-    tags = models.ManyToManyField(Tag, related_name='episodes',symmetrical=False, blank=True)
     audio = models.FileField(upload_to='audios/',blank=False, validators=[validate_audio_file])
     episode_thumbnail = models.FileField(upload_to='images/',blank=True, validators=[validate_image_file])
     podcast = models.ForeignKey(Podcast,on_delete=models.CASCADE,related_name="episodes")

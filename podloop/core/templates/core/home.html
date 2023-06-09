@@ -22,47 +22,39 @@
       </form>
 </div>
 {% if user.is_authenticated %}
+{% if recommended_podcasts %}
 <div class="row mt-5">
-    <h1 class="text-warning text-center mt-5">Reccomended for you</h1>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        <div class="col">
-          <div class="card h-100">
-            <img src="{{ MEDIA_URL }}images/alt_cover_b6vKBTh.jpg" class="card-img-top result-image" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card h-100">
-            <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="card-img-top result-image" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a short card.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card h-100">
-            <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="card-img-top result-image" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card h-100">
-            <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="card-img-top result-image" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            </div>
-          </div>
+  <h1 class="text-warning text-center mt-5">Reccomended for you</h1>
+  <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+{% for podcast in recommended_podcasts %}
+    <div class="col">
+      <div class="card h-100">
+        {% if podcast.podcast_thumbnail %}
+        <img
+          src="{{ MEDIA_URL }}{{podcast.podcast_thumbnail}}"
+          class="card-img-top result-image"
+          alt="Podcast thumbnail"
+        />
+        {% else %}
+        <img
+          src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg"
+          class="card-img-top result-image"
+          alt="Podcast thumbnail"
+        />
+        {% endif %}
+        <div class="card-body">
+          <a href="{% url 'core:podcast' podcast.slug %}" class="text-decoration-none text-warning"><h5 class="card-title">{{podcast.name}}</h5></a>
+          <p class="card-text">{{podcast.description}}</p>
+          <p>{{podcast.episodes.count}} episodes</p>
         </div>
       </div>
+    </div>
+{% endfor %}
+  </div>
 </div>
+{% endif %}
+        
+      
 {% else %}
 <div class="row mt-5">
   <h1 class="text-warning text-center mt-5 text-light">Login to get recommendations</h1>

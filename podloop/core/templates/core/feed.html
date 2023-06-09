@@ -24,13 +24,13 @@
             <ul class="list-unstyled">
             {% for follow in followings %}
                 <li class="media d-flex justify-content-start mb-3">
-                    {% if follow.podcast_thumbnail %}  
-                    <img src="{{ MEDIA_URL }}{{follow.podcast_thumbnail}}" class="mr-3" alt="Small Image" style="width: 50px; height: 50px; border-radius:50%;">
+                    {% if follow.podcast.podcast_thumbnail %}  
+                    <img src="{{ MEDIA_URL }}{{follow.podcast.podcast_thumbnail}}" class="mr-3" alt="Small Image" style="width: 50px; height: 50px; border-radius:50%;">
                     {% else %}
                     <img src="{{ MEDIA_URL }}images/default_podcast_thumbnail.jpg" class="mr-3" alt="Small Image" style="width: 50px; height: 50px; border-radius:50%;">
                     {% endif %}
                     <div class="media-body ms-3 align-middle mt-2">
-                        <a href="{% url 'core:podcast' follow.slug%}" class="mt-0 text-light text-decoration-none">{{follow.name}}</a>
+                        <a href="{% url 'core:podcast' follow.podcast.slug%}" class="mt-0 text-light text-decoration-none">{{follow.podcast.name}}</a>
                     </div>
                 </li>
             {% endfor %}

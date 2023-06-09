@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import home
-from .views import CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView,EpisodeView,ProfileView,CreatorView,BecomeCreator,PodcastEditView,PodcastEpisodeUpload,EditEpisodeView,PlaylistCreateView,PlaylistEditView,PlaylistView,DeleteEpisodeFromPlaylist,PlaylistDeleteView,Search,Feed,PodcastAnalytics
+from .views import Home,CategoryListView,CategoryDetailView,PodcastView,FollowView,UnfollowView,EpisodeView,ProfileView,CreatorView,BecomeCreator,PodcastEditView,PodcastEpisodeUpload,EditEpisodeView,PlaylistCreateView,PlaylistEditView,PlaylistView,DeleteEpisodeFromPlaylist,PlaylistDeleteView,Search,Feed,PodcastAnalytics
 from .models import *
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -77,7 +76,7 @@ def load_data():
 
 
 urlpatterns = [
-    path('home', home, name='home'),
+    path('home', Home.as_view(), name='home'),
     path('categories', CategoryListView.as_view(), name='categories'),
     path('categories/<slug:slug>', CategoryDetailView, name='category-detail'),
     path('podcasts/<slug:slug>', PodcastView, name='podcast'),
@@ -89,7 +88,7 @@ urlpatterns = [
     path('podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>', EpisodeView, name='episode'),
     path('podcasts/<slug:podcast_slug>/episode/<slug:episode_slug>/edit', login_required(EditEpisodeView.as_view()), name='episode-edit'),
     path('profile', login_required(ProfileView.as_view()), name='profile'),
-    path('profile/creator', login_required(CreatorView.as_view()), name='creator'),
+    path('profile/creator-studio', login_required(CreatorView.as_view()), name='creator'),
     path('profile/become-creator', login_required(BecomeCreator), name='become-creator'),
     path('profile/playlists/create', login_required(PlaylistCreateView.as_view()), name='playlist-create'),
     path('profile/playlists/<int:playlist_id>', PlaylistView, name='playlist'),

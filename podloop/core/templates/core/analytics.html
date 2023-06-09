@@ -43,6 +43,36 @@
             </div>
         </div>
     </div>
+    <div class="col">
+        <div class="card text-white bg-light mb-3 mx-auto" style="max-width: 18rem;">
+            <div class="card-header text-dark">Followers</div>
+            <div class="card-body">
+                <h5 class="card-title text-center text-dark" style="font-size:34px">{{followers}}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-light mb-3 mx-auto" style="max-width: 18rem;">
+            <div class="card-header text-dark">Follow change in the last week</div>
+            <div class="card-body">
+                {% if follows_in_the_last_week > 0%}
+                <h5 class="card-title text-center text-success" style="font-size:34px">+{{follows_in_the_last_week}}</h5>
+                {% elif follows_in_the_last_week == 0 %}
+                <h5 class="card-title text-center text-dark" style="font-size:34px">{{follows_in_the_last_week}}</h5>
+                {% else %}
+                <h5 class="card-title text-center text-danger" style="font-size:34px">{{follows_in_the_last_week}}</h5>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-white bg-light mb-3 mx-auto" style="max-width: 18rem;">
+            <div class="card-header text-dark">Ranking by followers</div>
+            <div class="card-body">
+                <h5 class="card-title text-center text-dark" style="font-size:34px">{{ranking_podcast}}</h5>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="row mt-5">
     {% if episodes %}
@@ -79,9 +109,6 @@
         </tbody>
     </table>
     <i><small class="text-light">* Data retrieved in the last 7 days,current day is included</small></i>
-    <div class="row mt-5">
-        <h1 class="text-light text-center"><span class="text-warning">{{podcast.followers.count}}</span> followers</h1>
-    </div>
     {% else %}
         <h4 class="text-warning text-center">Upload episodes to view their analytics</h4>
     {% endif %}

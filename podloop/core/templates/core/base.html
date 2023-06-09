@@ -53,6 +53,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item pe-1" href="{% url 'core:profile' %}">Profile</a></li>
+                  <li><a class="dropdown-item pe-1" href="{% url 'accounts:change-password' %}">Change password</a></li>
                   {% if user.is_creator %}
                   <li>
                     <a class="dropdown-item pe-1" href="{% url 'core:creator' %}">Creator studio</a>
@@ -96,6 +97,9 @@
       </nav>
     </row>
     <div class="container">{% block content %} {% endblock %}</div>
+    <footer class="d-flex flex-wrap justify-content-center mt-5 p-3 border-top bg-light fixed-bottom">
+      <h6 class="col-md-4 mb-0 text-muted text-center">© 2023 PodLoop</h6>
+    </footer>
 
     <!--[if lt IE 7]>
       <p class="browsehappy">

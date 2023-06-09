@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{% static 'css/badge.css' %}" />
 
 {% endblock %} {% block content %}
-<div class="mt-5 row">
+<div class="mt-5 row mb-5">
   <div class="info-section col-lg-4">
     <div class="episode-image">
       {% if podcast.podcast_thumbnail %}
@@ -88,7 +88,7 @@
     <div class="card card-body bg-dark text-light">{{podcast.description}}</div>
   </div>
   <hr class="text-light mt-3" />
-  <div class="episodes-list">
+  <div class="episodes-list mb-5">
     <div class="d-flex justify-content-between">
       <h2 class="text-light mb-5">{{episodes.count}} Episodes</h2>
       {% if episodes.count != 0 %}

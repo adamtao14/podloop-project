@@ -48,9 +48,9 @@
     <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
         <div class="row g-0">
             <div class="col-md-4 text-center">
-            {% if result.podcast_thumbnail %}
+            {% if result.podcast.podcast_thumbnail %}
             <img
-                src="{{ MEDIA_URL }}{{result.podcast_thumbnail}}"
+                src="{{ MEDIA_URL }}{{result.podcast.podcast_thumbnail}}"
                 class="img"
                 alt="Podcast thumbnail"
             />
@@ -64,16 +64,16 @@
             </div>
             <div class="col-md-8">
             <div class="card-body">
-                <a href="{% url 'core:podcast' result.slug %}" class="link-podcast"
-                ><h5 class="card-title">{{result.name}}</h5></a
+                <a href="{% url 'core:podcast' result.podcast.slug %}" class="link-podcast"
+                ><h5 class="card-title">{{result.podcast.name}}</h5></a
                 >
-                <h6 class="text-body-secondary">@{{result.owner.username}}</h6>
+                <h6 class="text-body-secondary">@{{result.podcast.owner.username}}</h6>
                 <div class="category-list">
-                {% for category in result.categories.all %}
+                {% for category in result.podcast.categories.all %}
                 <a href="{% url 'core:category-detail' category.slug%}"><span class="badge rounded-pill">{{category.name}}</span></a>
                 {% endfor %}
                 </div>
-                <p class="mt-2">{{result.followers.count}} Followers</p>
+                <p class="mt-2">{{result.followers}} Followers</p>
             </div>
             </div>
         </div>
@@ -82,9 +82,9 @@
     <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
         <div class="row g-0">
             <div class="col-md-4 text-center">
-            {% if result.episode_thumbnail %}
+            {% if result.episode.episode_thumbnail %}
             <img
-                src="{{ MEDIA_URL }}{{result.episode_thumbnail}}"
+                src="{{ MEDIA_URL }}{{result.episode.episode_thumbnail}}"
                 class="img"
                 alt="Podcast thumbnail"
             />
@@ -97,14 +97,14 @@
             {% endif %}
             </div>
             <div class="col-md-8">
-            <div class="card-body">
-                <a href="{% url 'core:episode' result.podcast.slug result.slug%}" class="link-podcast"
-                ><h5 class="card-title">{{result.title}}</h5></a
-                >
-                <h6 class="text-body-secondary">@{{result.podcast.owner.username}}</h6>
-                <h6 class="text-body-primary">From <span class="text-light">{{result.podcast.name}}</span></h6>
-                <p class="mt-2 text-light">{{result.length|seconds_to_minutes}}</p>
-            </div>
+              <div class="card-body">
+                  <a href="{% url 'core:episode' result.episode.podcast.slug result.episode.slug%}" class="link-podcast"
+                  ><h5 class="card-title">{{result.episode.title}}</h5></a
+                  >
+                  <h6 class="text-body-primary"><span class="text-light">{{result.episode.podcast.name}}</span></h6>
+                  <h6 class="text-body-secondary">{{result.streams}} streams</h6>
+                  <p class="mt-2 text-light">{{result.episode.length|seconds_to_minutes}}</p>
+              </div>
             </div>
         </div>
     </div>

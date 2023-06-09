@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from core.models import Podcast,EpisodeLike,Episode,EpisodeComment,EpisodeCommentLike,Playlist,EpisodeStream
+from core.models import Podcast,EpisodeLike,Episode,EpisodeComment,EpisodeCommentLike,Playlist,EpisodeStream,PodcastFollow
 from django.utils.html import escape
 User = get_user_model()
 
@@ -20,12 +20,12 @@ def ApiToggleFollow(request,podcast_slug):
     data = {}
     if request.user.is_authenticated:
         current_user = User.objects.get(id=request.user.id)
-        if current_user.followed_podcasts.filter(name=podcast.name).exists():
-            current_user.followed_podcasts.remove(podcast)
+        if PodcastFollow.objects.filter(user=current_user,podcast=podcast).exists():
+            PodcastFollow.objects.get(user=current_user,podcast=podcast).delete()
             data["is_following"] = False
             return HttpResponse(json.dumps(data), content_type='application/json', status=200)
         else:
-            current_user.followed_podcasts.add(podcast)
+            PodcastFollow.objects.create(user=current_user,podcast=podcast)
             data["is_following"] = True
             return HttpResponse(json.dumps(data), content_type='application/json', status=200)  
     else:
@@ -34,7 +34,7 @@ def ApiToggleFollow(request,podcast_slug):
 def ApiGetEpisodeUserInfo(request,podcast_slug,episode_slug):
     podcast = get_object_or_404(Podcast, slug=podcast_slug)
     episode = get_object_or_404(Episode, slug=episode_slug, podcast=podcast)
-    followers = str(Podcast.objects.get(name=podcast.name).followers.all().count())
+    followers = str(PodcastFollow.objects.filter(podcast=podcast).all().count())
     likes = EpisodeLike.objects.filter(episode=episode).all().count()
     is_owner = False
     is_following = False
@@ -47,7 +47,7 @@ def ApiGetEpisodeUserInfo(request,podcast_slug,episode_slug):
             is_owner = True
         else:
             current_user = User.objects.get(id=request.user.id)
-            if current_user.followed_podcasts.filter(name=podcast.name).exists():
+            if PodcastFollow.objects.filter(podcast=podcast,user=current_user).exists():
                 is_following = True
     
     

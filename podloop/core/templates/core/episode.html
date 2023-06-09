@@ -10,7 +10,7 @@
 {% endblock %} {% block content %}
 <div class="mt-5 row mb-5">
   <a href="{% url 'core:podcast' podcast.slug%}" class="text-light mb-5"
-    >&larr; Go back to episodes list</a
+    >&larr; All episodes</a
   >
   <div class="info-section col-lg-4">
     <div class="episode-image">
@@ -34,17 +34,6 @@
   <div class="col-lg-8 mt-4">
     <h1 class="text-light">{{episode.title}}</h1>
     <h5 class="text-warning">@{{owner.username}}</h5>
-    
-    <!--
-        
-        <div class="category-list mt-3">
-            {% for category in categories %}
-            <a href="{% url 'core:category-detail' category.slug%}"
-            ><span class="badge rounded-pill">{{category.name}}</span></a
-            >
-            {% endfor %}
-        </div>
-    -->
     <div class="row mb-3">
       <div class="follow-section mt-5 col-8 row" style="">
         <div class="col-sm-3" id="follow_section"></div>
@@ -103,7 +92,7 @@
   </div>
   <hr class="text-light mt-3" />
   <!--CREATE COMMENT-->
-  <div class="comment-section">
+  <div class="comment-section mb-5">
     <h2 class="text-light"><span id="comments_count"></span> Comments</h2>
     <form class="form-comment row mt-4" id="post_comment_form">
       {% csrf_token %}

@@ -12,7 +12,7 @@ from django.db.models import Count,Q
 from accounts.models import EmailVerification
 from accounts.utils import Util
 from .forms import ProfileForm,PodcastForm,EpisodeForm,EpisodeEditForm,PlaylistForm
-from .models import Category,Podcast,Episode,Playlist,EpisodeStream,EpisodeLike,EpisodeComment
+from .models import Category,Podcast,Episode,Playlist,EpisodeStream,EpisodeLike,EpisodeComment,PodcastFollow
 from .validators import validate_audio_file
 from urllib.parse import urlencode
 import uuid
@@ -20,8 +20,46 @@ import uuid
 
 User = get_user_model()
 
-def home(request):
-    return render(request, 'core/home.html')
+class Home(View):
+    template_name = "core/home.html"
+    current_user = None
+    def get(self,request):
+        recommended_podcasts = None
+        if request.user.is_authenticated:
+            self.current_user = User.objects.get(id=request.user.id)
+            recommended_podcasts = self.collaborative_filtering()
+        return render(request,self.template_name, context={'recommended_podcasts':recommended_podcasts})
+    
+    def collaborative_filtering(self):
+       
+            # Step 1: Calculate Similarity between Users
+        followed_podcasts = PodcastFollow.objects.filter(user=self.current_user).values_list('podcast_id', flat=True)
+        streamed_episodes = EpisodeStream.objects.filter(user=self.current_user).values_list('episode__podcast_id', flat=True)
+        
+        common_podcasts = set(followed_podcasts).intersection(set(streamed_episodes))
+        
+        similar_users = PodcastFollow.objects.filter(podcast_id__in=common_podcasts).exclude(user=self.current_user)\
+            .values('user').annotate(similarity=Count('podcast_id')).order_by('-similarity')[:10]
+        
+        # Step 2: Recommend Podcasts
+        recommended_podcasts = []
+        
+        for similar_user in similar_users:
+            # Get podcasts followed by similar users
+            similar_user_followed_podcasts = PodcastFollow.objects.filter(user=similar_user['user']).values_list('podcast_id', flat=True)
+            
+            # Exclude podcasts already followed by the target user
+            recommended_podcasts.extend(list(set(similar_user_followed_podcasts) - set(followed_podcasts)))
+        
+        # Step 3: Fetch recommended podcast details
+        recommended_podcasts = Podcast.objects.filter(id__in=recommended_podcasts)
+        
+        if not recommended_podcasts:
+        # Provide alternative recommendations or fallback options
+            recommended_podcasts = Podcast.objects.exclude(id__in=followed_podcasts)[:10]
+        
+        return recommended_podcasts
+        
 
 
 class CategoryListView(ListView):
@@ -51,7 +89,7 @@ def CategoryDetailView(request,slug):
         for podcast in current_page_podcasts.object_list:
             owner = User.objects.get(id=podcast.owner_id)
             categories = Podcast.objects.get(name=podcast.name).categories.all()
-            followers = str(Podcast.objects.get(name=podcast.name).followers.all().count())
+            followers = str(PodcastFollow.objects.filter(podcast=podcast).all().count())
 
             podcasts_list.append({
                 "description":podcast.description[:100]+"...",
@@ -78,7 +116,7 @@ def PodcastView(request,slug):
     podcast = get_object_or_404(Podcast, slug=slug)
 
     owner = User.objects.get(id=podcast.owner_id)
-    followers = str(Podcast.objects.get(name=podcast.name).followers.all().count())
+    followers = str(PodcastFollow.objects.filter(podcast=podcast).all().count())
     sort_by = request.GET.get("sort_by")
 
     if sort_by == "old_to_new":
@@ -96,7 +134,7 @@ def PodcastView(request,slug):
             is_owner = True
         else:
             current_user = User.objects.get(id=request.user.id)
-            if current_user.followed_podcasts.filter(name=podcast.name).exists():
+            if PodcastFollow.objects.filter(podcast=podcast,user=current_user).exists():
                 is_following = True
                 
     context = {
@@ -114,17 +152,17 @@ def PodcastView(request,slug):
 def FollowView(request,slug):
     podcast = get_object_or_404(Podcast, slug=slug)
     user = User.objects.get(id=request.user.id)
-    if user.followed_podcasts.filter(name=podcast.name).exists():
+    if PodcastFollow.objects.filter(podcast=podcast,user=user).exists():
         return redirect('core:podcast',slug)
     else:
-        user.followed_podcasts.add(podcast)
+        PodcastFollow.objects.create(podcast=podcast,user=user)
         return redirect('core:podcast',slug)
 
 def UnfollowView(request,slug):
     podcast = get_object_or_404(Podcast, slug=slug)
     user = User.objects.get(id=request.user.id)
-    if user.followed_podcasts.filter(name=podcast.name).exists():
-        user.followed_podcasts.remove(podcast)
+    if PodcastFollow.objects.filter(podcast=podcast,user=user).exists():
+        PodcastFollow.objects.get(podcast=podcast,user=user).delete()
         return redirect('core:podcast',slug)
     else:
         return redirect('core:podcast',slug)
@@ -662,9 +700,9 @@ def Search(request):
                 elif sort_by == "-name":
                     results_before_pagination = Podcast.objects.filter(name__icontains=query).order_by("-name")
                 elif sort_by == "most-followed":
-                    results_before_pagination = Podcast.objects.filter(name__icontains=query).annotate(follow_count=Count('followers')).order_by("-follow_count")
+                    results_before_pagination = Podcast.objects.filter(name__icontains=query).annotate(follow_count=Count('podcastfollow')).order_by("-follow_count")
                 elif sort_by == "least-followed":   
-                    results_before_pagination = Podcast.objects.filter(name__icontains=query).annotate(follow_count=Count('followers')).order_by("follow_count")
+                    results_before_pagination = Podcast.objects.filter(name__icontains=query).annotate(follow_count=Count('podcastfollow')).order_by("follow_count")
                 results_for_podcast = True
                 
             elif where == "episodes":
@@ -690,7 +728,14 @@ def Search(request):
             if int(current_page) <= paginator_controller.num_pages:
                 results_page_controller = paginator_controller.page(current_page)
                 
-                results = results_page_controller.object_list
+                for result in results_page_controller.object_list:
+                   if results_for_podcast:
+                        podcast_followers = PodcastFollow.objects.filter(podcast=result).all().count()
+                        results.append({'podcast':result,'followers':podcast_followers})
+                   else:
+                        episode_streams = EpisodeStream.objects.filter(episode=result).all().count()
+                        results.append({'episode':result,'streams':episode_streams})
+                
                 pagination["current_page"] = current_page
                 pagination["page_controller"] = results_page_controller
                 
@@ -704,14 +749,14 @@ def Feed(request):
     current_user = User.objects.get(id=request.user.id)
     one_day_ago = now() - timedelta(days=1)
     episodes_list = []
-    
-    episodes = Episode.objects.filter(podcast__followers=current_user, upload_date__gte=one_day_ago).order_by('-upload_date')
+    followed_podcasts = PodcastFollow.objects.filter(user=current_user).values_list('podcast',flat=True)
+    episodes = Episode.objects.filter(podcast__in=followed_podcasts, upload_date__gte=one_day_ago).order_by('-upload_date')
     for episode in episodes:
         streams = 0
         if EpisodeStream.objects.filter(episode=episode).exists():
             streams = EpisodeStream.objects.filter(episode=episode).all().count()
         episodes_list.append({'episode':episode,'streams':streams})
-    followings = current_user.followed_podcasts.all().order_by("name")
+    followings = PodcastFollow.objects.filter(user=current_user).order_by("podcast__name")
     return render(request, template_name, context={'user':current_user, 'results':episodes_list, 'followings':followings}) 
    
     
@@ -725,18 +770,29 @@ def PodcastAnalytics(request,slug):
         average_likes_per_episode = 0
         average_streams_per_episode = 0
         average_comments_per_episode = 0
+        follows_in_the_last_week = 0
         total_likes = 0
         total_streams = 0
         total_lengths = 0
         total_comments = 0
+        ranking_podcast = 0
         
         episodes_list = []
         today = now()
         last_week_start = today - timedelta(days=today.weekday() + 6)
         last_week_end = today
-        print(last_week_start,last_week_end)
+        week_before_start = last_week_start - timedelta(days=7)
+        week_before_end = last_week_end - timedelta(days=7)
 
         number_of_episodes = podcast.episodes.all().count()
+        followers = str(PodcastFollow.objects.filter(user=current_user).all().count())
+        follows_in_the_last_week = PodcastFollow.objects.filter(Q(podcast=podcast) & Q(date__gte=last_week_start) & Q(date__lte=last_week_end)).all().count()
+        follows_in_the_week_before = PodcastFollow.objects.filter(Q(podcast=podcast) & Q(date__gte=week_before_start) & Q(date__lte=week_before_end)).all().count()
+        
+        for rank,current_podcast in enumerate(Podcast.objects.annotate(follow_count=Count('podcastfollow')).order_by("follow_count"), start=1):
+            if current_podcast.id == podcast.id:
+                 ranking_podcast = rank
+
         if number_of_episodes > 0:
             
             for episode in podcast.episodes.all():
@@ -751,14 +807,12 @@ def PodcastAnalytics(request,slug):
                 total_comments += episode_comments
                 episodes_list.append({'episode':episode, 'likes_in_the_last_week':likes_in_the_last_week, 'streams_in_the_last_week':streams_in_the_last_week, 'total_likes':episode_likes, 'episode_comments':episode_comments, 'episode_streams':episode_streams})
 
-                print("data for podcast\n")
-                print(total_likes,total_comments,total_streams)
                 average_comments_per_episode = int(total_comments / number_of_episodes)
                 average_likes_per_episode = int(total_likes / number_of_episodes)
                 average_streams_per_episode = int(total_streams / number_of_episodes)
                 
         
-        return render(request, template_name, context={'user':current_user, 'episodes':episodes_list, 'podcast':podcast, 'average_comments_per_episode':average_comments_per_episode, 'average_likes_per_episode':average_likes_per_episode, 'average_streams_per_episode':average_streams_per_episode, 'total_lengths':total_lengths})
+        return render(request, template_name, context={'user':current_user, 'episodes':episodes_list, 'podcast':podcast, 'average_comments_per_episode':average_comments_per_episode, 'average_likes_per_episode':average_likes_per_episode, 'average_streams_per_episode':average_streams_per_episode, 'total_lengths':total_lengths, 'followers':followers, 'follows_in_the_last_week':follows_in_the_last_week-follows_in_the_week_before, 'ranking_podcast':ranking_podcast})
     else:
         return HttpResponse(status=401)
         

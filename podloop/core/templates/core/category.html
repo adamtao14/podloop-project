@@ -9,7 +9,7 @@
 
 {% endblock %} {% block content %}
 <div class="mt-5">
-  <h2 class="text-center text-light mb-4">{{category_name}}</h2>
+  <h2 class="text-center text-warning mb-4">{{category_name}}</h2>
   <a href="{% url 'core:categories' %}" class="text-light">&larr; Go back to categories list</a>
   {% for podcast in podcasts %}
   <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
