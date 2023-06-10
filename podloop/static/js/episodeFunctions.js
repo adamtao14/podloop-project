@@ -28,10 +28,6 @@ audio.addEventListener("play", function(event) {
   if(!localStorage.getItem(dataBackEnd["stream_element"])){
     localStorage.setItem(dataBackEnd["stream_element"], 1);
     stream_episode();
-  }else{
-    //send the stream request api
-    console.log("already streamed");
-    
   }
 });
 

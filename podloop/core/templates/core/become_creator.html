@@ -7,15 +7,14 @@
 {% block content %}
 <div class="row mx-auto">
     <h1 class="text-light text-center mt-5"> Become a creator</h1>
-    {% if is_not_verified %}
+    {% if not user.is_email_verified %}
     <div class="alert alert-warning alert-dismissible fade show mt-5" role="alert">
         {{is_not_verified}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     <img src="{{MEDIA_URL}}images/default/email_sent.svg" id="email_sent_image" class="mx-auto"/>
     <h6 class="text-light text-center mt-5">Verify your email and then come back to this page, to complete become a creator</h6>
-    {% endif %}
-    {% if not user.is_creator %}
+    {% elif not user.is_creator %}
     <div class="row mt-5 mx-auto">
         <h3 class="text-light text-center"><span class="text-warning">{{user.name|title}}</span> get ready to become a PodLooper </h3>
         <p class="text-light text-center mt-3">Read the terms and conditions and then click to accept</p>

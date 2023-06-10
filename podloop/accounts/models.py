@@ -15,7 +15,6 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
     
         user.save(using=self.db)
-        print("ho fatto: ", extra_fields.get('is_staff'))
         return user
 
     def create_user(self, email, username, name, last_name, password, **extra_fields):

@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
 {% endblock %} 
 {% block content %}
-<div class="row mx-auto">
+<div class="row mx-auto mb-5">
   {% if success_email_change %}
     <div class="alert alert-success alert-dismissible fade show mt-5" role="alert">
         {{success_email_change}}
@@ -85,6 +85,37 @@
         </ol>
       </div>
       {%endif%}  
+    </div>
+    <div class="row d-flex justify-content-center mb-5">
+      <a class="btn btn-danger mt-4 ms-1 col-sm-3" data-bs-toggle="modal" data-bs-target="#delete_podcast" href="#" style="max-width:150px">Delete account</a>
+    </div>
+    <div class="modal fade" id="delete_podcast" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Delete account</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete your account? This action is <strong>irreversible</strong> and will permanently remove your podcasts and their associated episodes.</p>
+            <p><strong>Warning:</strong> Deleting your account will remove all its data, including follows, comments likes and streams. This cannot be undone.</p>
+            <form class="form-comment row mt-4" action="{% url 'api:delete-account' %}">
+              {% csrf_token %}
+              <div class="mb-3 col-md-12">
+  
+                <input
+                  type="submit"
+                  class="btn btn-danger mt-3"
+                  value="I understand and want to delete"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-bs-dismiss="modal">Take me back</button>
+          </div>
+        </div>
+      </div>
     </div>
   
 </div>

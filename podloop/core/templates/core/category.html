@@ -15,9 +15,9 @@
   <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
     <div class="row g-0">
       <div class="col-md-4 text-center">
-        {% if podcast.podcast_thumbnail %}
+        {% if podcast.podcast.podcast_thumbnail %}
         <img
-          src="{{ MEDIA_URL }}{{podcast.podcast_thumbnail}}"
+          src="{{ MEDIA_URL }}{{podcast.podcast.podcast_thumbnail}}"
           class="img"
           alt="Podcast thumbnail"
         />
@@ -31,12 +31,12 @@
       </div>
       <div class="col-md-8">
         <div class="card-body">
-          <a href="/podcasts/{{podcast.slug}}" class="link-podcast"
-            ><h5 class="card-title">{{podcast.name}}</h5></a
+          <a href="/podcasts/{{podcast.podcast.slug}}" class="link-podcast"
+            ><h5 class="card-title">{{podcast.podcast.name}}</h5></a
           >
-            <h6 class="text-body-secondary">By {{podcast.owner_username}}</h6>
+            <h6 class="text-body-secondary">By {{podcast.podcast.owner.username}}</h6>
             <div class="category-list">
-            {% for category in podcast.categories %}
+            {% for category in podcast.podcast.categories.all %}
             <a href="{% url 'core:category-detail' category.slug%}"><span class="badge rounded-pill">{{category.name}}</span></a>
             {% endfor %}
             </div>

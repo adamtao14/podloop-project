@@ -47,6 +47,9 @@ class PodcastFollow(models.Model):
             ]
         verbose_name_plural = "PodcastFollows"
     
+    def __str__(self):
+        return self.user.username + " follows " + self.podcast.name
+    
 class Episode(models.Model):
     title = models.CharField(max_length=200,blank=False)
     description = models.CharField(max_length=500,blank=False)
@@ -93,6 +96,9 @@ class EpisodeLike(models.Model):
                 )
             ]
         verbose_name_plural = "EpisodeLikes"
+        
+    def __str__(self):
+        return self.user.username + " liked " + self.episode.title
     
 class EpisodeStream(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -106,7 +112,9 @@ class EpisodeStream(models.Model):
                 )
             ]
         verbose_name_plural = "EpisodeStreams"
-
+        
+    def __str__(self):
+        return self.user.username + " streamed " + self.episode.title
 
 class EpisodeComment(models.Model):
     episode = models.ForeignKey(Episode,on_delete=models.CASCADE,related_name="comments")
@@ -117,6 +125,9 @@ class EpisodeComment(models.Model):
     
     class Meta:
         verbose_name_plural = "EpisodeComments"
+    
+    def __str__(self):
+        return self.owner.username + " commented on " + self.episode.title
     
 class EpisodeCommentLike(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE, related_name="my_comment_likes")
@@ -132,3 +143,5 @@ class EpisodeCommentLike(models.Model):
         
         verbose_name_plural = "EpisodeCommentLikes"
     
+    def __str__(self):
+        return self.user.username + " liked a comment"

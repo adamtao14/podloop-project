@@ -28,9 +28,9 @@
   </div>
   <div class="col-lg-8 mt-4">
     <h1 class="text-light">{{podcast.name}}</h1>
-    <h5 class="text-warning">@{{owner.username}}</h5>
+    <h5 class="text-warning">@{{podcast.owner.username}}</h5>
     <div class="category-list mt-3">
-      {% for category in categories %}
+      {% for category in podcast.categories.all %}
       <a href="{% url 'core:category-detail' category.slug%}"
         ><span class="badge rounded-pill">{{category.name}}</span></a
       >

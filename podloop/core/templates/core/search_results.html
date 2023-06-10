@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{% static 'css/search_results.css' %}" />
 <link rel="stylesheet" href="{% static 'css/badge.css' %}" />
 {% endblock %} {% block content %} 
-<div class="search-section mt-5">
+<div class="search-section mt-5 mb-5">
     {% if results %}
     <h3 class="text-light text-center mb-5"> {{number_of_results}} results for <span class="text-warning">{{query}}</span> in <span class="text-warning">{{where}}</span></h3>
     <a class="text-light text-center mt-5 mx-auto d-block" href="{% url 'core:home' %}">Back to search</a>
@@ -111,7 +111,7 @@
     {% endif %}
     {% endfor %}
         
-  <nav aria-label="..." class="ms-auto me-auto mt-5">
+  <nav aria-label="..." class="ms-auto me-auto mt-5 mb-5">
     <ul class="pagination">
       {% if pagination.page_controller.has_previous %}
       <li class="page-item">

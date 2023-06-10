@@ -1,9 +1,9 @@
 {% extends "core/base.html" %}
 {% block content %}
 <div class="container mt-5 col-sm-6 mx-auto">
-    {% if password_change %}
+    {% if success_message %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{password_change}}
+        {{success_message}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endif %}
