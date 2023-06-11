@@ -9,8 +9,39 @@
 
 {% endblock %} {% block content %}
 <div class="mt-5">
-  <h2 class="text-center text-warning mb-4">{{category_name}}</h2>
+  <h2 class="text-center text-warning mb-4">{{category.name}}</h2>
   <a href="{% url 'core:categories' %}" class="text-light">&larr; Go back to categories list</a>
+  {% if podcasts %}
+  <div class="dropdown bg-dark d-flex justify-content-end mt-5">
+    <button
+      class="btn btn-secondary dropdown-toggle"
+      type="button"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      Sort By
+    </button>
+    <ul class="dropdown-menu dropdown-menu-dark">
+      <li>
+        <a
+          class="dropdown-item {% if sort_by == 'name' %} active {% endif %}"
+          href="/categories/{{category.slug}}?sort_by=name"
+          >Name [A-Z]</a
+        >
+      </li>
+      <li>
+        <a
+          class="dropdown-item {% if sort_by == '-name' %} active {% endif %}"
+          href="/categories/{{category.slug}}?sort_by=-name"
+          >Name [Z-A]</a
+        >
+      </li>
+      <li><a class="dropdown-item {% if sort_by == 'most-followed' %} active {% endif %}" href="/categories/{{category.slug}}?sort_by=most-followed">Most followed</a></li>
+      <li><a class="dropdown-item {% if sort_by == 'least-followed' %} active {% endif %}" href="/categories/{{category.slug}}?sort_by=least-followed">Least followed</a></li>
+      
+    </ul>
+  </div>
+  {% endif %}
   {% for podcast in podcasts %}
   <div class="card mb-3 mt-3 pt-2 pb-2 podcast">
     <div class="row g-0">
@@ -34,7 +65,7 @@
           <a href="/podcasts/{{podcast.podcast.slug}}" class="link-podcast"
             ><h5 class="card-title">{{podcast.podcast.name}}</h5></a
           >
-            <h6 class="text-body-secondary">By {{podcast.podcast.owner.username}}</h6>
+            <h6 class="text-body-secondary">@{{podcast.podcast.owner.username}}</h6>
             <div class="category-list">
             {% for category in podcast.podcast.categories.all %}
             <a href="{% url 'core:category-detail' category.slug%}"><span class="badge rounded-pill">{{category.name}}</span></a>
@@ -50,7 +81,7 @@
   {% if not podcasts %}
   <h1 class="text-light text-center mb-5 mt-5">No Podcasts found</h1>
   {% else %}
-  <nav aria-label="..." class="ms-auto me-auto mt-5">
+  <nav aria-label="..." class="ms-auto me-auto mt-5 mb-5">
     <ul class="pagination">
       {% if pagination.page_controller.has_previous %}
       <li class="page-item">

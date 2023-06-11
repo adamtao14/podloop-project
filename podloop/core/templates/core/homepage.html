@@ -1,0 +1,54 @@
+{% extends "core/base.html" %} 
+{% load static %}
+{% block title %} Homepage {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/homepage.css' %}" />
+{% endblock %} 
+{% block content %} 
+
+<div class="row mt-5 mx-auto">
+    <div class="col-md-6 mt-5 mb-5">
+        <h1 class="text-warning text-center mb-3" id="header-title">PodLoop</h1>
+        <p class="text-light text-center mb-4 mx-auto" id="header-description">The platform to share your podcasts</p>
+        <a href="{% url 'core:home' %}" class="btn btn-warning mx-auto d-block" style="max-width:190px">Get started</a>
+    </div>
+    <div class="col-md-6">
+        <img
+          src="{{ MEDIA_URL }}images/default/home.svg"
+          class="img mx-auto d-block"
+          id="header-img"
+          alt="home image"
+        />
+    </div>
+</div>
+<div class="row mt-5 info-section background-white">
+    <div class="col-md-6">
+        <img
+          src="{{ MEDIA_URL }}images/default/info_section_image.png"
+          class="img mx-auto d-block mt-5"
+          id="info-section-img"
+          alt="info section image"
+        />
+    </div>
+    <div class="col-md-6 mt-5">
+        <h1 class="text-warning text-center mb-3 mt-3" id="header-title">Share</h1>
+        <p class="text-dark text-center mb-4 mx-auto" id="header-description">“Let the world know about your passions by uploading content in an easy and fast way”</p>
+    </div>
+</div>
+<div class="row mt-5 mb-5 info-section">
+    <div class="col-md-6 mt-5 mb-5">
+        <h1 class="text-warning text-center mb-3" id="header-title">Listen</h1>
+        <p class="text-light text-center mb-4 mx-auto" id="header-description">“Wether you like movies or science there’s alway a podcast waiting for you”</p>
+    </div>
+    <div class="col-md-6 mb-5">
+        <img
+          src="{{ MEDIA_URL }}images/default/info_section_image_2.jpg"
+          class="img mx-auto d-block"
+          id="info-section-img"
+          alt="info section image 2"
+        />
+    </div>
+</div>
+
+
+{% endblock %}

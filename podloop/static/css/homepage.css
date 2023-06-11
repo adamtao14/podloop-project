@@ -1,0 +1,38 @@
+#header-img {
+    max-width: 300px;
+}
+
+#header-title {
+    font-size: 64px;
+}
+
+#header-description {
+    font-size: 20px;
+}
+
+.info-section {
+    height: 400px;
+}
+
+.background-white {
+    background: #fff;
+}
+
+#info-section-img {
+    max-width: 400px;
+}
+
+p {
+    max-width: 400px;
+}
+
+@media only screen and (max-width: 800px) {
+    p {
+        font-size: 15px;
+    }
+
+    .info-section {
+        height: auto;
+        padding: 10px;
+    }
+}

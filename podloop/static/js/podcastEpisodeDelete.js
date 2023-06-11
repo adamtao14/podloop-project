@@ -11,7 +11,6 @@ if(delete_podcast_form){
 if(delete_episode_form){
 
   delete_episode_form.addEventListener("submit", async function(event){
-      console.log("ciao");
       event.preventDefault();
       await delete_episode();
   });

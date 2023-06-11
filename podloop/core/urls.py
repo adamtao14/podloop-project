@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Home,CategoryListView,CategoryDetailView,PodcastView,FollowPodcast,UnfollowPodcast,EpisodeView,ProfileView,CreatorView,BecomeCreator,PodcastEditView,PodcastEpisodeUpload,EditEpisodeView,PlaylistCreateView,PlaylistEditView,PlaylistView,DeleteEpisodeFromPlaylist,PlaylistDeleteView,Search,Feed,PodcastAnalytics
+from .views import Home,CategoryListView,CategoryDetailView,PodcastView,FollowPodcast,UnfollowPodcast,EpisodeView,ProfileView,CreatorView,BecomeCreator,PodcastEditView,PodcastEpisodeUpload,EditEpisodeView,PlaylistCreateView,PlaylistEditView,PlaylistView,DeleteEpisodeFromPlaylist,PlaylistDeleteView,Search,Feed,PodcastAnalytics,HomePage
 from .models import *
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
@@ -76,6 +76,7 @@ def load_data():
 
 
 urlpatterns = [
+    path('', HomePage, name='homepage'),
     path('home', Home.as_view(), name='home'),
     path('categories', CategoryListView.as_view(), name='categories'),
     path('categories/<slug:slug>', CategoryDetailView, name='category-detail'),

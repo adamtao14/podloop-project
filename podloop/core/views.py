@@ -20,6 +20,10 @@ import uuid
 
 User = get_user_model()
 
+def HomePage(request):
+    template_name = "core/homepage.html"
+    return render(request,template_name,context={})
+    
 class Home(View):
     template_name = "core/home.html"
     current_user = None
@@ -72,15 +76,30 @@ class CategoryListView(ListView):
 def CategoryDetailView(request,slug):
     template_name = "core/category.html"
     category = get_object_or_404(Category,slug=slug)
-    podcasts = Category.objects.get(slug=slug).podcasts.all()
-    paginator_controller = Paginator(podcasts, 5)
     if request.GET.get("page"):
         # Get current page if page parameter exists
        current_page = int(request.GET.get("page"))
     else:
         # If not present we are in the first page
         current_page = 1
+    
+    if request.GET.get("sort_by"):
+        sort_by = request.GET.get("sort_by")
+    else:
+        sort_by = "name"
+    
+    results_before_pagination = None
+     
+    if sort_by == "name":
+        results_before_pagination = Category.objects.get(slug=slug).podcasts.order_by("name")
+    elif sort_by == "-name":
+        results_before_pagination = Category.objects.get(slug=slug).podcasts.order_by("-name")
+    elif sort_by == "most-followed":
+        results_before_pagination = Category.objects.get(slug=slug).podcasts.annotate(follow_count=Count('podcastfollow')).order_by("-follow_count")
+    elif sort_by == "least-followed":   
+        results_before_pagination = Category.objects.get(slug=slug).podcasts.annotate(follow_count=Count('podcastfollow')).order_by("follow_count")
         
+    paginator_controller = Paginator(results_before_pagination, 5)
     podcasts_list = []
     pagination = {}
     # Only show if the current page is less then the maximum pages
@@ -100,7 +119,7 @@ def CategoryDetailView(request,slug):
         pagination["current_page"] = current_page
         pagination["page_controller"] = current_page_podcasts
         
-    context={"podcasts": podcasts_list, "pagination":pagination, "category_name":category.name}
+    context={"podcasts": podcasts_list, "pagination":pagination, "category":category, "sort_by":sort_by}
     return render(request, template_name, context=context)
 
 
