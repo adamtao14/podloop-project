@@ -23,7 +23,6 @@ class Podcast(models.Model):
     name = models.CharField(max_length=300,blank=False, unique=True)
     owner = models.ForeignKey(User,on_delete=models.CASCADE,blank=False)
     slug = models.CharField(max_length=500,unique=True,null=True)
-    #followers = models.ManyToManyField(User,related_name="followed_podcasts",symmetrical=False)
     description = models.CharField(max_length=500,blank=False)
     categories = models.ManyToManyField(Category,related_name="podcasts",symmetrical=False,blank=False)
     podcast_thumbnail = models.FileField(upload_to='images/',blank=True, validators=[validate_image_file])
