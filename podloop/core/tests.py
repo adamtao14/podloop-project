@@ -1,15 +1,74 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
 from .models import Podcast, Category
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-
-
+from django.db import transaction
+from django.urls import reverse
 User = get_user_model()
-class UserAndPodcastCreationTest(TestCase):
+
+
+class category_test(TestCase):
     def setUp(self):
-        self.category = Category.objects.create(name='Technology', slug='technology')
+        # Set up initial data for tests
+        self.category_data = {
+            'name': "test category",
+            'slug': 'test-category'
+        }    
+        
+    def test_create_category(self):
+        # Test the creation of a category
+        category = Category.objects.create(**self.category_data)
+        self.assertEqual(category.name, self.category_data['name'])
+        self.assertEqual(category.slug, self.category_data['slug'])
+
+    def test_category_name_uniqueness(self):
+        # Test the creation of a category with the same name as one already made
+        Category.objects.create(**self.category_data)
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Category.objects.create(**self.category_data)
+                
+    def tearDown(self):
+        # Delete all objects from the database
+        Category.objects.all().delete()
+        super().tearDown()
+                
+class user_test(TestCase):
+    def setUp(self):
+        # Set up initial data for tests
+        self.user_data = {
+            'email': 'test@example.com',
+            'username': 'testuser',
+            'name': 'Test',
+            'last_name': 'User',
+            'password': 'testpassword',
+        }
+        
+    def test_create_user(self):
+        # Test the creation of a user
+        user = User.objects.create_user(**self.user_data)
+        self.assertEqual(user.email, self.user_data['email'])
+        self.assertEqual(user.username, self.user_data['username'])
+        self.assertEqual(user.name, self.user_data['name'])
+        self.assertEqual(user.last_name, self.user_data['last_name'])
+
+    def test_user_email_uniqueness(self):
+        # Test the creation of a user with the same email as one already made
+        User.objects.create_user(**self.user_data)
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                User.objects.create(**self.user_data)    
+                
+    def tearDown(self):
+        # Delete all objects from the database
+        User.objects.all().delete()
+        super().tearDown()
+        
+class podcast_test(TestCase):
+    def setUp(self):
+        # Set up initial data for tests
         self.user_data = {
             'email': 'test@example.com',
             'username': 'testuser',
@@ -21,65 +80,21 @@ class UserAndPodcastCreationTest(TestCase):
         self.podcast_data = {
             'name': 'Test Podcast',
             'description': 'This is a test podcast',
-            'owner': None,  # To be filled during the test
         }
 
-    def test_user_and_podcast_creation(self):
-        # Create a user
-        user = User.objects.create_user(**self.user_data)
-        self.assertEqual(user.email, self.user_data['email'])
-        self.assertEqual(user.username, self.user_data['username'])
-        self.assertEqual(user.name, self.user_data['name'])
-        self.assertEqual(user.last_name, self.user_data['last_name'])
+        self.category_data = {
+            'name': "test category",
+            'slug': 'test-category'
+        }
 
-        # Create a podcast
-        self.podcast_data['owner'] = user
-        podcast = Podcast.objects.create(**self.podcast_data)
-        self.assertEqual(podcast.name, self.podcast_data['name'])
-        self.assertEqual(podcast.description, self.podcast_data['description'])
-        self.assertEqual(podcast.owner, user)
 
-        # Add the category to the podcast
-        podcast.categories.add(self.category)
-        self.assertIn(self.category, podcast.categories.all())
-
-        # Upload a podcast thumbnail (assuming you have an image file)
-        thumbnail_file = SimpleUploadedFile(
-            'test_thumbnail.jpg',
-            b'binarydata',
-            content_type='image/jpeg'
-        )
-        podcast.podcast_thumbnail = thumbnail_file
-        podcast.save()
-
-        # Test the uploaded thumbnail
-        self.assertIsNotNone(podcast.podcast_thumbnail)
-
-        # Optional: Test the ManyToMany relationship from Category to Podcast
-        self.assertIn(podcast, self.category.podcasts.all())
-
-        # Optional: Test the reverse relationship from User to Podcast
-        self.assertIn(podcast, user.podcast_set.all())
-
-        # Test creating another podcast with the same name (should raise an IntegrityError)
-        with self.assertRaises(IntegrityError):
-            Podcast.objects.create(name=self.podcast_data['name'], description='Another podcast', owner=user)
-
-        # Test creating a podcast with a different name (should not raise an exception)
-        Podcast.objects.create(name='Another Podcast', description='Different podcast', owner=user)
-
-    def test_category_name_uniqueness(self):
-        # Test creating a category with an existing name (should raise an IntegrityError)
-        with self.assertRaises(IntegrityError):
-            Category.objects.create(name=self.category.name, slug='test-slug')
-
-    def test_podcast_thumbnail_format(self):
+    def test_podcast_thumbnail_invalid_format(self):
         # Test creating a podcast with an invalid thumbnail format (should raise a ValidationError)
         with self.assertRaises(ValidationError):
             thumbnail_file = SimpleUploadedFile(
-                'test_thumbnail.gif',
+                'test_thumbnail.mp3',
                 b'binarydata',
-                content_type='image/gif'
+                content_type='audio/mpeg'
             )
             podcast = Podcast(
                 name='Test Podcast',
@@ -88,3 +103,120 @@ class UserAndPodcastCreationTest(TestCase):
                 podcast_thumbnail=thumbnail_file
             )
             podcast.full_clean()
+
+    def test_create_podcast_with_category(self):
+        # Create a category
+        category = Category.objects.create(**self.category_data)
+        # Create a user
+        user = User.objects.create_user(**self.user_data)
+
+        # Upload a podcast thumbnail (assuming you have an image file)
+        thumbnail_file = SimpleUploadedFile(
+            'test_thumbnail.jpg',
+            b'binarydata',
+            content_type='image/jpeg'
+        )
+        # Create a podcast
+        self.podcast_data['owner'] = user
+        self.podcast_data['podcast_thumbnail'] = thumbnail_file
+        podcast = Podcast.objects.create(**self.podcast_data)
+
+        # Add the category to the podcast
+        podcast.categories.add(category)
+        podcast.save()
+
+        # Test if the category got added to podcast
+        self.assertIn(category, podcast.categories.all())
+
+        # Test the uploaded thumbnail
+        self.assertIsNotNone(podcast.podcast_thumbnail)
+
+        # Test the ManyToMany relationship from Category to Podcast
+        self.assertIn(podcast, category.podcasts.all())
+
+    def tearDown(self):
+        # Delete all objects from the database
+        Category.objects.all().delete()
+        User.objects.all().delete()
+        Podcast.objects.all().delete()
+        super().tearDown()
+
+class ViewsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='be@*qpOBW&bY',
+            email='testuser@gmail.com',
+            name='test',
+            last_name='user'
+        )
+        self.podcast_data = {
+            'name': 'My Podcast',
+            'description': 'This is a test podcast',
+            'slug':'my-podcast'
+        }
+
+        self.category_data = {
+            'name': "test category",
+            'slug': 'test-category'
+        }
+
+    def test_login_success_and_home_view(self):
+        # Log in the user
+        self.client.force_login(self.user)
+
+        # Make a GET request to the view URL
+        response = self.client.get(reverse('core:profile'))
+
+        # Assert that the response has a status code of 200 (OK)
+        self.assertEqual(response.status_code, 200)
+
+        # Assert that the response contains the expected content
+        self.assertContains(response, "Update profile")
+
+    def test_anonymus_home_view(self):
+
+        # Make a GET request to the view URL
+        response = self.client.get(reverse('core:profile'))
+
+        # Assert that the response has a status code of 302 
+        # This is because if you are not logged in, you get redireceted to login
+        self.assertEqual(response.status_code, 302)
+
+    
+    
+    def test_podcast_edit_page_view(self):
+        # Log in the user
+        self.client.force_login(self.user)
+        # Create a category
+        category = Category.objects.create(**self.category_data)
+        # Upload a podcast thumbnail (assuming you have an image file)
+        thumbnail_file = SimpleUploadedFile(
+            'test_thumbnail.jpg',
+            b'binarydata',
+            content_type='image/jpeg'
+        )
+        # Create a podcast
+        self.podcast_data['owner'] = self.user
+        self.podcast_data['podcast_thumbnail'] = thumbnail_file
+        podcast = Podcast.objects.create(**self.podcast_data)
+
+        # Add the category to the podcast
+        podcast.categories.add(category)
+        podcast.save()
+        
+        response = self.client.get(reverse('core:podcast-edit', kwargs={'slug':self.podcast_data['slug']}))
+
+        # Assert that the response has a status code of 200
+        self.assertEqual(response.status_code, 200)
+        # Assert that the response contains the expected content
+        self.assertContains(response, 'Edit <span class="text-warning">'+self.podcast_data['name']+'</span>')
+
+    def tearDown(self):
+        self.client.logout()
+        # Delete all objects from the database
+        Category.objects.all().delete()
+        User.objects.all().delete()
+        Podcast.objects.all().delete()
+        super().tearDown()

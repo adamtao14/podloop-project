@@ -913,7 +913,7 @@ def PodcastAnalytics(request,slug):
         follows_in_the_last_week = PodcastFollow.objects.filter(Q(podcast=podcast) & Q(date__gte=last_week_start) & Q(date__lte=last_week_end)).all().count()
         follows_in_the_week_before = PodcastFollow.objects.filter(Q(podcast=podcast) & Q(date__gte=week_before_start) & Q(date__lte=week_before_end)).all().count()
         
-        for rank,current_podcast in enumerate(Podcast.objects.annotate(follow_count=Count('podcastfollow')).order_by("follow_count"), start=1):
+        for rank,current_podcast in enumerate(Podcast.objects.annotate(follow_count=Count('podcastfollow')).order_by("-follow_count"), start=1):
             # Find the rank of the podcast based on followers
             if current_podcast.id == podcast.id:
                  ranking_podcast = rank
