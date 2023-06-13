@@ -151,6 +151,13 @@ class ViewsTest(TestCase):
             name='test',
             last_name='user'
         )
+        self.user_2 = User.objects.create_user(
+            username='testuser2',
+            password='be@*qpOBW&bY',
+            email='testuser2@gmail.com',
+            name='test',
+            last_name='user'
+        )
         self.podcast_data = {
             'name': 'My Podcast',
             'description': 'This is a test podcast',
@@ -212,6 +219,32 @@ class ViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         # Assert that the response contains the expected content
         self.assertContains(response, 'Edit <span class="text-warning">'+self.podcast_data['name']+'</span>')
+        
+    def test_podcast_edit_page_view_not_authorized(self):
+        # Create a category
+        category = Category.objects.create(**self.category_data)
+        # Upload a podcast thumbnail (assuming you have an image file)
+        thumbnail_file = SimpleUploadedFile(
+            'test_thumbnail.jpg',
+            b'binarydata',
+            content_type='image/jpeg'
+        )
+        # Create a podcast
+        self.podcast_data['owner'] = self.user
+        self.podcast_data['podcast_thumbnail'] = thumbnail_file
+        podcast = Podcast.objects.create(**self.podcast_data)
+
+        # Add the category to the podcast
+        podcast.categories.add(category)
+        podcast.save()
+        # Log in the user
+        self.client.force_login(self.user_2)
+        
+        response = self.client.get(reverse('core:podcast-edit', kwargs={'slug':self.podcast_data['slug']}))
+
+        # Assert that the response has a status code of 401, this is because user_2 is not the owner
+        self.assertEqual(response.status_code, 401)
+
 
     def tearDown(self):
         self.client.logout()
