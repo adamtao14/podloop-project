@@ -1,5 +1,8 @@
 podloop/.env
 podloop/db.sqlite3
+podloop/db copy.sqlite3
 Pipfile
 podloop/media
 Pipfile.lock
+podloop/core/data/audios
+podloop/core/data/images

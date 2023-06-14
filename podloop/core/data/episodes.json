@@ -1,0 +1,211 @@
+[
+    {
+        "id": 1,
+        "title": "Episode 1: The Journey Begins",
+        "description": "Join us as we embark on a captivating storytelling journey.",
+        "podcast": "The Art of Storytelling",
+        "slug": "episode-1-the-journey-begins",
+        "is_private": 0,
+        "audio": "audio1.mp3",
+        "episode_thumbnail": "image1.jpg",
+        "length": 92
+    },
+    {
+        "id": 2,
+        "title": "Tech Innovations of Tomorrow",
+        "description": "Discover the latest technological advancements shaping our future.",
+        "podcast": "Tech Talks",
+        "slug": "tech-innovations-of-tomorrow",
+        "is_private": 0,
+        "audio": "audio2.mp3",
+        "episode_thumbnail": "image2.jpg",
+        "length": 131
+    },
+    {
+        "id": 3,
+        "title": "Mindful Living for Everyday Bliss",
+        "description": "Learn how mindfulness can bring peace and joy to your daily life.",
+        "podcast": "Mindfulness Matters",
+        "slug": "mindful-living-for-everyday-bliss",
+        "is_private": 0,
+        "audio": "audio3.mp3",
+        "episode_thumbnail": "image3.jpg",
+        "length": 122
+    },
+    {
+        "id": 4,
+        "title": "Success Stories: Entrepreneurs' Path to Triumph",
+        "description": "Explore the inspiring journeys of successful entrepreneurs.",
+        "podcast": "Entrepreneurial Journey",
+        "slug": "success-stories-entrepreneurs-path-to-triumph",
+        "is_private": 0,
+        "audio": "audio4.mp3",
+        "episode_thumbnail": "image4.jpg",
+        "length": 114
+    },
+    {
+        "id": 5,
+        "title": "The Science of Happiness: Unraveling the Secrets",
+        "description": "Delve into the scientific aspects of happiness and well-being.",
+        "podcast": "The Science of Happiness",
+        "slug": "the-science-of-happiness-unraveling-the-secrets",
+        "is_private": 0,
+        "audio": "audio5.mp3",
+        "episode_thumbnail": "image5.jpg",
+        "length": 121
+    },
+    {
+        "id": 6,
+        "title": "Journey to the Unknown: Unveiling the Mysteries",
+        "description": "Embark on an exciting adventure to unravel the world's mysteries.",
+        "podcast": "Exploring the Unknown",
+        "slug": "journey-to-the-unknown-unveiling-the-mysteries",
+        "is_private": 0,
+        "audio": "audio6.mp3",
+        "episode_thumbnail": "image6.jpg",
+        "length": 112
+    },
+    {
+        "id": 7,
+        "title": "Mastering Financial Freedom: Strategies for Success",
+        "description": "Learn practical tips and strategies to achieve financial independence.",
+        "podcast": "Financial Freedom",
+        "slug": "mastering-financial-freedom-strategies-for-success",
+        "is_private": 0,
+        "audio": "audio7.mp3",
+        "episode_thumbnail": "image7.jpg",
+        "length": 189
+    },
+    {
+        "id": 8,
+        "title": "Unlocking Inner Wellness: Insights for a Balanced Life",
+        "description": "Gain valuable insights into maintaining holistic well-being.",
+        "podcast": "Health and Wellness Insights",
+        "slug": "unlocking-inner-wellness-insights-for-a-balanced-life",
+        "is_private": 0,
+        "audio": "audio8.mp3",
+        "episode_thumbnail": "image8.jpg",
+        "length": 120
+    },
+    {
+        "id": 9,
+        "title": "The Creative Mind: Nurturing Imagination and Innovation",
+        "description": "Explore the minds of creative individuals and their unique processes.",
+        "podcast": "The Creative Mind",
+        "slug": "the-creative-mind-nurturing-imagination-and-innovation",
+        "is_private": 0,
+        "audio": "audio9.mp3",
+        "episode_thumbnail": "image9.jpg",
+        "length": 224
+    },
+    {
+        "id": 10,
+        "title": "Building Strong Connections: The Power of Relationships",
+        "description": "Discover the significance of relationships and their impact on our lives.",
+        "podcast": "The Power of Relationships",
+        "slug": "building-strong-connections-the-power-of-relationships",
+        "is_private": 0,
+        "audio": "audio10.mp3",
+        "episode_thumbnail": "image10.jpg",
+        "length": 148
+    },
+    {
+        "id": 11,
+        "title": "Unveiling World History: A Journey Through Time",
+        "description": "Take a captivating journey through significant events in world history.",
+        "podcast": "Exploring World History",
+        "slug": "unveiling-world-history-a-journey-through-time",
+        "is_private": 0,
+        "audio": "audio11.mp3",
+        "episode_thumbnail": "image11.jpg",
+        "length": 160
+    },
+    {
+        "id": 12,
+        "title": "The Future of Work: Embracing Technological Shifts",
+        "description": "Explore the evolving landscape of work in the era of technology.",
+        "podcast": "The Future of Work",
+        "slug": "the-future-of-work-embracing-technological-shifts",
+        "is_private": 0,
+        "audio": "audio12.mp3",
+        "episode_thumbnail": "image12.jpg",
+        "length": 197
+    },
+    {
+        "id": 13,
+        "title": "Nature's Wonders: Beauty Beyond Boundaries",
+        "description": "Discover the awe-inspiring wonders of nature across the globe.",
+        "podcast": "Nature's Wonders",
+        "slug": "natures-wonders-beauty-beyond-boundaries",
+        "is_private": 0,
+        "audio": "audio13.mp3",
+        "episode_thumbnail": "image13.jpg",
+        "length": 182
+    },
+    {
+        "id": 14,
+        "title": "Culinary Delights: Mastering the Art of Cooking",
+        "description": "Delight in the world of culinary arts and explore new recipes.",
+        "podcast": "The Art of Cooking",
+        "slug": "culinary-delights-mastering-the-art-of-cooking",
+        "is_private": 0,
+        "audio": "audio14.mp3",
+        "episode_thumbnail": "image14.jpg",
+        "length": 155
+    },
+    {
+        "id": 15,
+        "title": "Sports Talk: Engaging in Sporting Conversations",
+        "description": "Join the discussion on the latest news and updates in the sports world.",
+        "podcast": "Sports Talk",
+        "slug": "sports-talk-engaging-in-sporting-conversations",
+        "is_private": 0,
+        "audio": "audio15.mp3",
+        "episode_thumbnail": "image15.jpg",
+        "length": 185
+    },
+    {
+        "id": 16,
+        "title": "Inspiring Leadership: Empowering Growth and Success",
+        "description": "Learn from inspiring leaders and their journeys towards success.",
+        "podcast": "Inspiring Leadership",
+        "slug": "inspiring-leadership-empowering-growth-and-success",
+        "is_private": 0,
+        "audio": "audio16.mp3",
+        "episode_thumbnail": "image16.jpg",
+        "length": 164
+    },
+    {
+        "id": 17,
+        "title": "Unlocking the Power of Mindfulness",
+        "description": "Discover the transformative effects of mindfulness in your daily life.",
+        "podcast": "Mindfulness Matters",
+        "slug": "unlocking-the-power-of-mindfulness",
+        "is_private": 0,
+        "audio": "audio8.mp3",
+        "episode_thumbnail": "image8.jpg",
+        "length": 135
+    },
+    {
+        "id": 18,
+        "title": "The Art of Effective Storytelling",
+        "description": "Explore the techniques and impact of storytelling in various aspects of life.",
+        "podcast": "The Art of Storytelling",
+        "slug": "the-art-of-effective-storytelling",
+        "is_private": 0,
+        "audio": "audio9.mp3",
+        "episode_thumbnail": "image9.jpg",
+        "length": 214
+    },
+    {
+        "id": 19,
+        "title": "The Science of Happiness and Well-being",
+        "description": "Uncover the scientific principles and practices that lead to a happier life.",
+        "podcast": "The Science of Happiness",
+        "slug": "the-science-of-happiness-and-well-being",
+        "is_private": 0,
+        "audio": "audio10.mp3",
+        "episode_thumbnail": "image10.jpg",
+        "length": 182
+    }
+]

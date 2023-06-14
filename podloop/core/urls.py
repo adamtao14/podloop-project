@@ -3,10 +3,12 @@ from .views import Home,CategoryListView,CategoryDetailView,PodcastView,FollowPo
 from .models import *
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
-import os,json
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
+from django.core.files import File
+from django.core.files.images import ImageFile
+import os,json
 app_name = "core"
 
 def load_data():
@@ -22,13 +24,14 @@ def load_data():
 
     ####USERS####
     User = get_user_model()
-    if(User.objects.all().count() == 1):
+    if(User.objects.all().count() == 0):
         with open(BASE_PATH+'users.json', 'r') as file:
             users = json.load(file)
 
         # Iterate over the user profiles
-        for user in users:
+        for user in users:                
             new_user = User()
+            new_user.id = user['id']
             new_user.name = user['name']
             new_user.last_name = user['last_name']
             new_user.email = user['email']
@@ -36,6 +39,9 @@ def load_data():
             new_user.username = user['username']
             new_user.is_active = True
             new_user.is_email_verified = True
+            if user['is_superuser'] == 1:
+                new_user.is_superuser = True
+                new_user.is_staff = True
             new_user.save()
         print('Users created')
         
@@ -45,7 +51,7 @@ def load_data():
         with open(BASE_PATH+'podcasts.json', 'r') as file:
             podcasts = json.load(file)
 
-        # Iterate over the user profiles
+        # Iterate over the podcasts 
         for podcast in podcasts:
             new_podcast = Podcast()
             new_podcast.name = podcast['name']
@@ -58,21 +64,45 @@ def load_data():
             new_podcast.save()
         print('Podcasts created')
         
-     ####FOLLOWS####
-    if(Podcast.objects.all().count() == 0):
-        with open(BASE_PATH+'following.json', 'r') as file:
-            follows = json.load(file)
-
-        # Iterate over the user profiles
-        for follow in follows:
-            for podcast in follow["followed_podcasts"]:
-                podcast_object = Podcast.objects.get(name=podcast)
-                podcast_object.followers.add(User.objects.get(email=follow["email"]))
-                podcast_object.save()
-           
-        print('Followings created')
-    
-#load_data()
+    ####EPISODES####
+    if(Episode.objects.all().count() == 0):
+        with open(BASE_PATH+'episodes.json', 'r') as file:
+            episodes = json.load(file)
+        
+        # Iterate over the episodes 
+        for episode in episodes:
+            new_episode = Episode()
+            new_episode.id = episode['id']
+            new_episode.title = episode['title']
+            new_episode.description = episode['description']
+            new_episode.podcast = Podcast.objects.get(name=episode['podcast'])
+            new_episode.slug = episode['slug']
+            new_episode.is_private = episode['is_private']
+            new_episode.length = episode['length']
+            with open(BASE_PATH+'images/'+episode['episode_thumbnail'], 'rb') as image_file:
+                file_image = ImageFile(image_file)
+                new_episode.episode_thumbnail.save(episode['episode_thumbnail'],file_image)
+                
+            with open(BASE_PATH+'audios/'+episode['audio'], 'rb') as audio_file:
+                file_audio = File(audio_file)
+                new_episode.audio.save(episode['audio'],file_audio)
+            new_episode.save()  
+        print('Episodes created')
+        
+    if(EpisodeComment.objects.all().count() == 0):
+        with open(BASE_PATH+'comments.json', 'r') as file:
+            comments = json.load(file)
+        for comment in comments:
+            episode = Episode.objects.get(id=comment['episode_id'])
+            owner = User.objects.get(id=comment['owner'])
+            new_comment = EpisodeComment()
+            new_comment.id = comment['id']
+            new_comment.text = comment['comment']
+            new_comment.episode = episode
+            new_comment.owner = owner
+            new_comment.save()
+        print('Comments created')
+load_data()
 
 
 urlpatterns = [

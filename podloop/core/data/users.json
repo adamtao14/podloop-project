@@ -1,93 +1,128 @@
 [
   {
+    "id": 1,
+    "name": "Super",
+    "last_name": "User",
+    "email": "podloopadmin@example.com",
+    "password": "z2V3@!Av%b-3",
+    "username": "podloopadmin",
+    "is_superuser": 1
+  },
+  {
+    "id": 2,
     "name": "John",
     "last_name": "Smith",
     "email": "john.smith@example.com",
     "password": "z9V3@^Nj%b+3",
-    "username": "johnsmith"
+    "username": "johnsmith",
+    "is_superuser": 0
   },
   {
+    "id": 3,
     "name": "Emma",
     "last_name": "Johnson",
     "email": "emma.johnson@example.com",
     "password": "P@55w0rd!1234",
-    "username": "emmajohnson"
+    "username": "emmajohnson",
+    "is_superuser": 0
   },
   {
+    "id": 4,
     "name": "Michael",
     "last_name": "Williams",
     "email": "michael.williams@example.com",
     "password": "Xy$8K@59c^Tm",
-    "username": "mwilliams"
+    "username": "mwilliams",
+    "is_superuser": 0
   },
   {
+    "id": 5,
     "name": "Sarah",
     "last_name": "Anderson",
     "email": "sarah.anderson@example.com",
     "password": "S3cur3P@ssword",
-    "username": "sarahanderson"
+    "username": "sarahanderson",
+    "is_superuser": 0
   },
   {
+    "id": 6,
     "name": "Christopher",
     "last_name": "Thompson",
     "email": "christopher.thompson@example.com",
     "password": "P@ssw0rd!Secur3",
-    "username": "cthompson"
+    "username": "cthompson",
+    "is_superuser": 0
   },
   {
+    "id": 7,
     "name": "Olivia",
     "last_name": "Martinez",
     "email": "olivia.martinez@example.com",
     "password": "M9!2p4@H&5$s",
-    "username": "omartinez"
+    "username": "omartinez",
+    "is_superuser": 0
   },
   {
+    "id": 8,
     "name": "Ethan",
     "last_name": "Lewis",
     "email": "ethan.lewis@example.com",
     "password": "5Gh&7@4Rf8p2",
-    "username": "elewis"
+    "username": "elewis",
+    "is_superuser": 0
   },
   {
+    "id": 9,
     "name": "Ava",
     "last_name": "Hernandez",
     "email": "ava.hernandez@example.com",
     "password": "H2#hV!s4^mW1",
-    "username": "ahernandez"
+    "username": "ahernandez",
+    "is_superuser": 0
   },
   {
+    "id": 10,
     "name": "Noah",
     "last_name": "Brown",
     "email": "noah.brown@example.com",
     "password": "B1@5e2#8N$7o",
-    "username": "nbrown"
+    "username": "nbrown",
+    "is_superuser": 0
   },
   {
+    "id": 11,
     "name": "Sophia",
     "last_name": "Taylor",
     "email": "sophia.taylor@example.com",
     "password": "$ecur3P@55!234",
-    "username": "sophiataylor"
+    "username": "sophiataylor",
+    "is_superuser": 0
   },
   {
+    "id": 12,
     "name": "Liam",
     "last_name": "Anderson",
     "email": "liam.anderson@example.com",
     "password": "A9!4L^m2S&8w",
-    "username": "liamanderson"
+    "username": "liamanderson",
+    "is_superuser": 0
   },
   {
+    "id": 13,
     "name": "Isabella",
     "last_name": "White",
     "email": "isabella.white@example.com",
     "password": "W#9Xc&5Sv3@p",
-    "username": "iwhite"
+    "username": "iwhite",
+    "is_superuser": 0
   },
   {
+    "id": 14,
     "name": "Benjamin",
     "last_name": "Lee",
     "email": "benjamin.lee@example.com",
     "password": "L7p&5@hX^e#4",
-    "username": "blee"
+    "username": "blee",
+    "is_superuser": 0
   }
 ]

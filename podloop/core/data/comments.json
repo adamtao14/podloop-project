@@ -1,0 +1,122 @@
+[
+    {
+        "id": 1,
+        "comment": "Great episode! Really enjoyed the storytelling.",
+        "episode_id": 1,
+        "owner": 1
+    },
+    {
+        "id": 2,
+        "comment": "The future looks exciting with these technological innovations.",
+        "episode_id": 2,
+        "owner": 2
+    },
+    {
+        "id": 3,
+        "comment": "Mindfulness has truly transformed my life for the better.",
+        "episode_id": 3,
+        "owner": 3
+    },
+    {
+        "id": 4,
+        "comment": "Inspiring stories of triumph! Motivated to chase my entrepreneurial dreams.",
+        "episode_id": 4,
+        "owner": 4
+    },
+    {
+        "id": 5,
+        "comment": "Fascinating insights into the science of happiness and well-being.",
+        "episode_id": 5,
+        "owner": 5
+    },
+    {
+        "id": 6,
+        "comment": "I can't wait to embark on the journey of unraveling mysteries!",
+        "episode_id": 6,
+        "owner": 6
+    },
+    {
+        "id": 7,
+        "comment": "Practical tips and strategies for achieving financial freedom. Loved it!",
+        "episode_id": 7,
+        "owner": 7
+    },
+    {
+        "id": 8,
+        "comment": "Maintaining inner wellness is crucial for a balanced and fulfilling life.",
+        "episode_id": 8,
+        "owner": 8
+    },
+    {
+        "id": 9,
+        "comment": "Nurturing imagination and fostering innovation is the key to creativity.",
+        "episode_id": 9,
+        "owner": 9
+    },
+    {
+        "id": 10,
+        "comment": "Building strong connections is essential for personal and professional growth.",
+        "episode_id": 10,
+        "owner": 10
+    },
+    {
+        "id": 11,
+        "comment": "World history is a captivating journey through time and events.",
+        "episode_id": 11,
+        "owner": 11
+    },
+    {
+        "id": 12,
+        "comment": "Embracing technological shifts is necessary for adapting to the future of work.",
+        "episode_id": 12,
+        "owner": 12
+    },
+    {
+        "id": 13,
+        "comment": "Nature's wonders never cease to amaze me. Beautiful and awe-inspiring.",
+        "episode_id": 13,
+        "owner": 13
+    },
+    {
+        "id": 14,
+        "comment": "Exploring the art of cooking has been a delightful and enriching experience.",
+        "episode_id": 14,
+        "owner": 14
+    },
+    {
+        "id": 15,
+        "comment": "As a sports enthusiast, I love engaging in conversations about my favorite teams.",
+        "episode_id": 15,
+        "owner": 1
+    },
+    {
+        "id": 16,
+        "comment": "Inspiring leaders show us the path to growth and achieving success.",
+        "episode_id": 16,
+        "owner": 2
+    },
+    {
+        "id": 17,
+        "comment": "Mindfulness has unlocked a new level of peace and clarity in my life.",
+        "episode_id": 17,
+        "owner": 3
+    },
+    {
+        "id": 18,
+        "comment": "The power of storytelling is immense. It has the ability to touch hearts and inspire change.",
+        "episode_id": 18,
+        "owner": 4
+    },
+    {
+        "id": 19,
+        "comment": "The science of happiness provides valuable insights for leading a more fulfilling life.",
+        "episode_id": 19,
+        "owner": 5
+    },
+    {
+        "id": 20,
+        "comment": "Really enjoyed the latest episode. The guests had some interesting perspectives.",
+        "episode_id": 1,
+        "owner": 6
+    }
+]
