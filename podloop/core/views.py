@@ -235,93 +235,28 @@ class ProfileView(View):
             success_email_change = request.GET.get('success_email_change')
             return render(request, self.template_name, context={'form': form, 'user':current_user, 'success_email_change':success_email_change, 'playlists':playlists})
     
-def post(self, request):
-    message = []
-    current_user = User.objects.get(id=request.user.id)
-    form = self.form_class(request.POST, request.FILES)
-    playlists = Playlist.objects.filter(owner=current_user)
-    if form.is_valid():
-        # Get the form data
-        name = form.cleaned_data.get("name")
-        last_name = form.cleaned_data.get("last_name")
-        username = form.cleaned_data.get("username")
-        email = form.cleaned_data.get("email")
-        link_profile_picture = form.cleaned_data.get("link_profile_picture")
+    def post(self, request):
+        message = []
+        current_user = User.objects.get(id=request.user.id)
+        form = self.form_class(request.POST, request.FILES)
+        playlists = Playlist.objects.filter(owner=current_user)
+        if form.is_valid():
+            # Get the form data
+            name = form.cleaned_data.get("name")
+            last_name = form.cleaned_data.get("last_name")
+            username = form.cleaned_data.get("username")
+            email = form.cleaned_data.get("email")
+            link_profile_picture = form.cleaned_data.get("link_profile_picture")
 
-        # Check if any changes were made
-        if (
-            name == current_user.name
-            and last_name == current_user.last_name
-            and username == current_user.username
-            and email == current_user.email
-            and not link_profile_picture
-        ):
-            message = "No changes made"
-            return render(
-                request,
-                self.template_name,
-                context={
-                    'form': form,
-                    'user': current_user,
-                    'success_message': message,
-                    'playlists': playlists
-                }
-            )
-        else:
-            # Check if username or email already exist
+            # Check if any changes were made
             if (
-                User.objects.filter(username=username).exists()
-                and current_user.username != username
+                name == current_user.name
+                and last_name == current_user.last_name
+                and username == current_user.username
+                and email == current_user.email
+                and not link_profile_picture
             ):
-                message.append("Username already exists")
-            if (
-                User.objects.filter(email=email).exists()
-                and current_user.email != email
-            ):
-                message.append("Email already exists")
-
-            if message != []:
-                # Display error message if username or email already exist
-                return render(
-                    request,
-                    self.template_name,
-                    context={
-                        'form': form,
-                        'user': current_user,
-                        'error_message': message,
-                        'playlists': playlists
-                    }
-                )
-
-            # Update user information
-            current_user.name = name
-            current_user.last_name = last_name
-            current_user.username = username
-            if link_profile_picture:
-                current_user.link_profile_picture = link_profile_picture
-
-            if current_user.email != email:
-                # Update user email and send verification email
-                current_user.email = email
-                current_user.is_email_verified = False
-                current_user.save()
-
-                verify_code = uuid.uuid1()
-                new_email_verification = EmailVerification(
-                    user=current_user,
-                    code=verify_code
-                )
-                new_email_verification.save()
-
-                Util.send_confirm_email(email, verify_code)
-
-                message = "Your email has been updated, please verify it at the link we sent you"
-                url = reverse('core:profile') + '?' + urlencode({'success_email_change': message})
-                return redirect(url)
-            else:
-                # Save user information if no email change
-                current_user.save()
-                message = "Updated successfully"
+                message = "No changes made"
                 return render(
                     request,
                     self.template_name,
@@ -332,19 +267,84 @@ def post(self, request):
                         'playlists': playlists
                     }
                 )
-    else:
-        # Display error message for invalid form data
-        message.append("Invalid data")
-        return render(
-            request,
-            self.template_name,
-            context={
-                'form': form,
-                'user': current_user,
-                'error_message': message,
-                'playlists': playlists
-            }
-        )
+            else:
+                # Check if username or email already exist
+                if (
+                    User.objects.filter(username=username).exists()
+                    and current_user.username != username
+                ):
+                    message.append("Username already exists")
+                if (
+                    User.objects.filter(email=email).exists()
+                    and current_user.email != email
+                ):
+                    message.append("Email already exists")
+
+                if message != []:
+                    # Display error message if username or email already exist
+                    return render(
+                        request,
+                        self.template_name,
+                        context={
+                            'form': form,
+                            'user': current_user,
+                            'error_message': message,
+                            'playlists': playlists
+                        }
+                    )
+
+                # Update user information
+                current_user.name = name
+                current_user.last_name = last_name
+                current_user.username = username
+                if link_profile_picture:
+                    current_user.link_profile_picture = link_profile_picture
+
+                if current_user.email != email:
+                    # Update user email and send verification email
+                    current_user.email = email
+                    current_user.is_email_verified = False
+                    current_user.save()
+
+                    verify_code = uuid.uuid1()
+                    new_email_verification = EmailVerification(
+                        user=current_user,
+                        code=verify_code
+                    )
+                    new_email_verification.save()
+
+                    Util.send_confirm_email(email, verify_code)
+
+                    message = "Your email has been updated, please verify it at the link we sent you"
+                    url = reverse('core:profile') + '?' + urlencode({'success_email_change': message})
+                    return redirect(url)
+                else:
+                    # Save user information if no email change
+                    current_user.save()
+                    message = "Updated successfully"
+                    return render(
+                        request,
+                        self.template_name,
+                        context={
+                            'form': form,
+                            'user': current_user,
+                            'success_message': message,
+                            'playlists': playlists
+                        }
+                    )
+        else:
+            # Display error message for invalid form data
+            message.append("Invalid data")
+            return render(
+                request,
+                self.template_name,
+                context={
+                    'form': form,
+                    'user': current_user,
+                    'error_message': message,
+                    'playlists': playlists
+                }
+            )
 
 
 
