@@ -25,6 +25,7 @@
       <h1 class="text-light mt-3">{{user.name|title }} {{user.last_name|title }}</h1>
       <p class="text-warning mt-1">@{{user.username}}</p>
       
+      
     </div>
     <div class="row d-flex justify-content-center mx-auto">
       
@@ -86,9 +87,11 @@
       </div>
       {%endif%}  
     </div>
+    <small class="text-center text-secondary">Joined: {{user.date_joined}}</small>
     <div class="row d-flex justify-content-center mb-5">
       <a class="btn btn-danger mt-4 ms-1 col-sm-3" data-bs-toggle="modal" data-bs-target="#delete_podcast" href="#" style="max-width:150px">Delete account</a>
     </div>
+    
     <div class="modal fade" id="delete_podcast" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
