@@ -42,6 +42,8 @@ def load_data():
             if user['is_superuser'] == 1:
                 new_user.is_superuser = True
                 new_user.is_staff = True
+            if user['is_creator'] == 1:
+                new_user.is_creator = True
             new_user.save()
         print('Users created')
         

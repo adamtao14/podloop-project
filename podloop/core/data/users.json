@@ -6,7 +6,8 @@
     "email": "podloopadmin@example.com",
     "password": "z2V3@!Av%b-3",
     "username": "podloopadmin",
-    "is_superuser": 1
+    "is_superuser": 1,
+    "is_creator": 0
   },
   {
     "id": 2,
@@ -15,7 +16,8 @@
     "email": "john.smith@example.com",
     "password": "z9V3@^Nj%b+3",
     "username": "johnsmith",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 0
   },
   {
     "id": 3,
@@ -24,7 +26,8 @@
     "email": "emma.johnson@example.com",
     "password": "P@55w0rd!1234",
     "username": "emmajohnson",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 4,
@@ -33,7 +36,8 @@
     "email": "michael.williams@example.com",
     "password": "Xy$8K@59c^Tm",
     "username": "mwilliams",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 0
   },
   {
     "id": 5,
@@ -42,7 +46,8 @@
     "email": "sarah.anderson@example.com",
     "password": "S3cur3P@ssword",
     "username": "sarahanderson",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 6,
@@ -51,7 +56,8 @@
     "email": "christopher.thompson@example.com",
     "password": "P@ssw0rd!Secur3",
     "username": "cthompson",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 7,
@@ -60,7 +66,8 @@
     "email": "olivia.martinez@example.com",
     "password": "M9!2p4@H&5$s",
     "username": "omartinez",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 8,
@@ -69,7 +76,8 @@
     "email": "ethan.lewis@example.com",
     "password": "5Gh&7@4Rf8p2",
     "username": "elewis",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 9,
@@ -78,7 +86,8 @@
     "email": "ava.hernandez@example.com",
     "password": "H2#hV!s4^mW1",
     "username": "ahernandez",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 10,
@@ -87,7 +96,8 @@
     "email": "noah.brown@example.com",
     "password": "B1@5e2#8N$7o",
     "username": "nbrown",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 11,
@@ -96,7 +106,8 @@
     "email": "sophia.taylor@example.com",
     "password": "$ecur3P@55!234",
     "username": "sophiataylor",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 0
   },
   {
     "id": 12,
@@ -105,7 +116,8 @@
     "email": "liam.anderson@example.com",
     "password": "A9!4L^m2S&8w",
     "username": "liamanderson",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 13,
@@ -114,7 +126,8 @@
     "email": "isabella.white@example.com",
     "password": "W#9Xc&5Sv3@p",
     "username": "iwhite",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   },
   {
     "id": 14,
@@ -123,6 +136,7 @@
     "email": "benjamin.lee@example.com",
     "password": "L7p&5@hX^e#4",
     "username": "blee",
-    "is_superuser": 0
+    "is_superuser": 0,
+    "is_creator": 1
   }
 ]
