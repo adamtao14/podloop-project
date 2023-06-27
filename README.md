@@ -20,6 +20,8 @@ Il progetto parte con dei dati iniziali in modo da non avere un sito vuoto, per 
 - A questo punto navigare all'url che appare nel terminale
 
 All'interno del file users.json che si trova in **podloop/core/data** si possono scegliere vari utenti con il quale eseguire l'accesso, oppure se si preferisce ci si può registrare con un account nuovo. Alcuni utenti hanno anche dei podcast, con questo si possono vedere le feature specifiche per i creatori di contenuti e quelle per gli utenti normali o anonimi.
+
+Una volta fatto l'accesso si può navigare nel sito, iscriversi a podcast, ascoltare episodi commentare ecc..
 # Eliminare i dati nelle tabelle
 
 Nel caso si volesse ripartire da un database vuoto, si può eseguire il drop di tutte le tabelle popolate eseguendo il seguente script.
