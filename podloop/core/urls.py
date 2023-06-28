@@ -60,6 +60,9 @@ def load_data():
             new_podcast.description = podcast['description']
             new_podcast.owner_id = podcast['owner_id']
             new_podcast.slug = slugify(podcast['name'])
+            with open(BASE_PATH+'images/'+podcast['podcast_thumbnail'], 'rb') as image_file:
+                file_image = ImageFile(image_file)
+                new_podcast.podcast_thumbnail.save(podcast['podcast_thumbnail'],file_image)
             new_podcast.save()
             for category in podcast["categories"]:
                 new_podcast.categories.add(Category.objects.get(name=category))

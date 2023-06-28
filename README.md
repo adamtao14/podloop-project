@@ -28,10 +28,13 @@ Nel caso si volesse ripartire da un database vuoto, si può eseguire il drop di 
 
 Basta andare nel file del database **db.sqlite3**, selezionare l'editor sql, incollare le seguenti istruzioni ed eseguirle.
 
+Inoltre se si vogliono anche eliminare i veecchi file immagine e audio, eliminare tutti i file di **podloop/media/audios** e tutti gli elementi della cartella **podloop/media/images** **tranne la cartella default**
 ```sql
 DELETE FROM "accounts_user";
 
 DELETE FROM "core_episodecomment";
+
+DELETE FROM "core_episodestream";
 
 DELETE FROM "core_episodecommentlike";
 

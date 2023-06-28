@@ -127,7 +127,7 @@ def ApiGetComments(request,podcast_slug,episode_slug):
                 if comment.owner.link_profile_picture:
                     link_profile_picture = comment.owner.link_profile_picture.url
                 else:
-                    link_profile_picture = '/media/images/default_podcast_thumbnail.jpg'
+                    link_profile_picture = '/media/images/default/default_podcast_thumbnail.jpg'
                   
                 comment_data["comment"] = {"id":comment.id,"text":comment.text,"date":str(comment.date.strftime('%Y-%m-%d %H:%M')),"owner":comment.owner.username,"is_owner":is_owner, "link_profile_picture":link_profile_picture,"is_liked":is_liked,"likes":comment_likes}
                 
@@ -142,7 +142,7 @@ def ApiGetComments(request,podcast_slug,episode_slug):
                     if comment_reply.owner.link_profile_picture:
                         link_profile_picture = comment_reply.owner.link_profile_picture.url
                     else:
-                        link_profile_picture = '/media/images/default_podcast_thumbnail.jpg'
+                        link_profile_picture = '/media/images/default/default_podcast_thumbnail.jpg'
                     comment_data["replies"].append({"id":comment_reply.id,"text":comment_reply.text,"date":str(comment_reply.date.strftime('%Y-%m-%d %H:%M')),"owner":comment_reply.owner.username,"is_owner":is_owner,"link_profile_picture":link_profile_picture,"is_liked":is_liked,"likes":comment_likes})
                 data["comments"].append(comment_data)
         return HttpResponse(json.dumps(data), content_type='application/json', status=200)

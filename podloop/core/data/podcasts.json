@@ -5,7 +5,8 @@
     "owner_id": 12,
     "categories": [
       "Education"
-    ]
+    ],
+    "podcast_thumbnail": "image1.jpg"
   },
   {
     "name": "Tech Talks",
@@ -13,7 +14,8 @@
     "owner_id": 5,
     "categories": [
       "Science and Technology"
-    ]
+    ],
+    "podcast_thumbnail": "image2.jpg"
   },
   {
     "name": "Mindfulness Matters",
@@ -21,7 +23,8 @@
     "owner_id": 10,
     "categories": [
       "Personal Development"
-    ]
+    ],
+    "podcast_thumbnail": "image3.jpg"
   },
   {
     "name": "Entrepreneurial Journey",
@@ -29,7 +32,8 @@
     "owner_id": 14,
     "categories": [
       "Self-Help and Motivation"
-    ]
+    ],
+    "podcast_thumbnail": "image4.jpg"
   },
   {
     "name": "The Science of Happiness",
@@ -37,7 +41,8 @@
     "owner_id": 7,
     "categories": [
       "Self-Help and Motivation"
-    ]
+    ],
+    "podcast_thumbnail": "image5.jpg"
   },
   {
     "name": "Exploring the Unknown",
@@ -45,7 +50,8 @@
     "owner_id": 3,
     "categories": [
       "Science and Technology"
-    ]
+    ],
+    "podcast_thumbnail": "image6.jpg"
   },
   {
     "name": "Financial Freedom",
@@ -54,7 +60,8 @@
     "categories": [
       "Business and Finance",
       "Self-Help and Motivation"
-    ]
+    ],
+    "podcast_thumbnail": "image7.jpg"
   },
   {
     "name": "Health and Wellness Insights",
@@ -62,7 +69,8 @@
     "owner_id": 13,
     "categories": [
       "Mental Health and Well-being"
-    ]
+    ],
+    "podcast_thumbnail": "image8.jpg"
   },
   {
     "name": "The Creative Mind",
@@ -70,7 +78,8 @@
     "owner_id": 14,
     "categories": [
       "Self-Help and Motivation"
-    ]
+    ],
+    "podcast_thumbnail": "image9.jpg"
   },
   {
     "name": "The Power of Relationships",
@@ -78,7 +87,8 @@
     "owner_id": 8,
     "categories": [
       "Relationships and Dating"
-    ]
+    ],
+    "podcast_thumbnail": "image10.jpg"
   },
   {
     "name": "Exploring World History",
@@ -86,7 +96,8 @@
     "owner_id": 5,
     "categories": [
       "Education"
-    ]
+    ],
+    "podcast_thumbnail": "image11.jpg"
   },
   {
     "name": "The Future of Work",
@@ -94,7 +105,8 @@
     "owner_id": 12,
     "categories": [
       "Education"
-    ]
+    ],
+    "podcast_thumbnail": "image12.jpg"
   },
   {
     "name": "Nature's Wonders",
@@ -102,7 +114,8 @@
     "owner_id": 10,
     "categories": [
       "Travel and Adventure"
-    ]
+    ],
+    "podcast_thumbnail": "image13.jpg"
   },
   {
     "name": "The Art of Cooking",
@@ -110,7 +123,8 @@
     "owner_id": 6,
     "categories": [
       "Food and Cooking"
-    ]
+    ],
+    "podcast_thumbnail": "image14.jpg"
   },
   {
     "name": "Sports Talk",
@@ -118,7 +132,8 @@
     "owner_id": 7,
     "categories": [
       "Sports"
-    ]
+    ],
+    "podcast_thumbnail": "image15.jpg"
   },
   {
     "name": "Inspiring Leadership",
@@ -127,6 +142,7 @@
     "categories": [
       "Personal Development",
       "Business and Finance"
-    ]
+    ],
+    "podcast_thumbnail": "image16.jpg"
   }
 ]
