@@ -6,7 +6,7 @@ Per una descrizione dettagliata del progetto, si prega di visionare il file **po
 
 I requisiti per far pratire il progetto sono:
 
-- Python 3.9
+- Python >= 3.9 
 - I moduli all'interno del file **requirements.txt**
 
 # Avviare il progetto
@@ -17,7 +17,7 @@ Il progetto parte con dei dati iniziali in modo da non avere un sito vuoto, per 
 - Inserire il comando  `pipenv shell`
 - Entrare nella cartella **podloop**
 - Inserire il comando `python.exe .\manage.py runserver`
-- A questo punto navigare all'url che appare nel terminale
+- A questo punto navigare all'url http://127.0.0.1:8000/
 
 All'interno del file users.json che si trova in **podloop/core/data** si possono scegliere vari utenti con il quale eseguire l'accesso, oppure se si preferisce ci si può registrare con un account nuovo. Alcuni utenti hanno anche dei podcast, con questo si possono vedere le feature specifiche per i creatori di contenuti e quelle per gli utenti normali o anonimi.
 
