@@ -23,7 +23,7 @@
     </div>
     <div class="profile-info row text-center">
       <h1 class="text-light mt-3">{{user.name|title }} {{user.last_name|title }}</h1>
-      <p class="text-warning mt-1">@{{user.username}}</p>
+      <p class="text-warning mt-1">@{{user.username}} {% if user.is_email_verified %} <span class="text-light">&#10003;</span> {% endif %}</p>
       
       
     </div>
