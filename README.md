@@ -1,7 +1,5 @@
 # PodLoop
-Progetto di tecnologie web di Adam Taoufiq
-
-Per una descrizione dettagliata del progetto, si prega di visionare il file **podloop_tesina.pdf**
+Piattaforma per la pubblicazione e ascolto di podcast
 # Requsiti
 
 I requisiti per far pratire il progetto sono:
